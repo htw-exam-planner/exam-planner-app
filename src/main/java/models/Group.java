@@ -26,7 +26,7 @@ public class Group {
         try {
             repository = DBRepository.getInstance();
 
-            groups = repository.getAllGroups();
+            groups = repository.getGroups();
         } catch (Exception e){
             e.printStackTrace();
             throw new Exception("Exception while getting groups from database");

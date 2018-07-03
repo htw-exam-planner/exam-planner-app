@@ -53,7 +53,7 @@ public class DBRepository {
      * @return A list of all groups
      * @throws SQLException if SQL Execution fails
      */
-    public List<Group> getAllGroups() throws SQLException {
+    public List<Group> getGroups() throws SQLException {
         final String query = "SELECT GroupNumber FROM Groups";
         Statement statement = connection.createStatement();
 
