@@ -1,12 +1,16 @@
 package models;
 
+import repository.DBRepository;
+
 import java.util.*;
 
 public class Group {
     private int groupNumber;
 
-    private static List<Group> groups = new ArrayList<Group>();
-
+    /**
+     * Constructs a new group
+     * @param groupNumber Number of the group
+     */
     public Group(int groupNumber){
         this.groupNumber = groupNumber;
     }
@@ -14,12 +18,20 @@ public class Group {
     /**
      * Gets all groups
      * @return a list of all groups
+     * @throws Exception if an exception is thrown while getting the groups
      */
-    public static List<Group> all(){
-        groups.clear();
-        groups.add(new Group(1));
-        groups.add(new Group(2));
-        groups.add(new Group(3));
+    public static List<Group> all() throws Exception {
+        DBRepository repository;
+        List<Group> groups;
+        try {
+            repository = DBRepository.getInstance();
+
+            groups = repository.getAllGroups();
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new Exception("Exception while getting groups from database");
+        }
+
         return groups;
     }
 

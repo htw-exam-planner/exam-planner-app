@@ -1,0 +1,5 @@
+#Rename this to db.properties and use your username and password
+DB_DRIVER_CLASS=com.microsoft.sqlserver.jdbc.SQLServerDriver
+DB_URL=jdbc:sqlserver://141.56.2.45;databaseName=PTermineSE2
+DB_USERNAME=your-username
+DB_PASSWORD=your-password
