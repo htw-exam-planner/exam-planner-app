@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="ExampleController"
+            prefHeight="400.0" prefWidth="600.0">
+
+    <Text text="Example"
+          AnchorPane.topAnchor="100" AnchorPane.leftAnchor="100"/>
+    <TextField fx:id="inputField"
+            AnchorPane.topAnchor="130" AnchorPane.leftAnchor="100"/>
+    <Text fx:id="outputText" text="Text"
+          AnchorPane.topAnchor="160" AnchorPane.leftAnchor="100"/>
+    <Button text="Update" onAction="#updateOutput"
+            AnchorPane.topAnchor="210" AnchorPane.leftAnchor="100"/>
+</AnchorPane>
