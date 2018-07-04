@@ -19,55 +19,6 @@ public class Appointment {
     private LocalTime bookingEnd=null;
     private String room = null;
 
-    private Appointment(LocalDate date, LocalTime timeWindowStart, LocalTime timeWindowEnd, String note) {
-        this.date = date;
-        this.timeWindowStart = timeWindowStart;
-        this.timeWindowEnd = timeWindowEnd;
-        this.note = note;
-    }
-
-    /**
-     * Constructs a new free or deactivated appointment
-     * @param date The appointment's date
-     * @param timeWindowStart The start of the appointment's time window
-     * @param timeWindowEnd The end of the appointment's time window
-     * @param note The appointment's note
-     * @param state The appointment's state
-     * @throws InvalidAppointmentStateException if the state is not State.FREE or State.DEACTIVATED
-     */
-    public Appointment(LocalDate date, LocalTime timeWindowStart, LocalTime timeWindowEnd, String note, State state)
-            throws InvalidAppointmentStateException {
-
-        this(date,timeWindowStart,timeWindowEnd,note);
-
-        if(!(state==State.FREE || state==State.DEACTIVATED)) {
-            throw new InvalidAppointmentStateException();
-        }
-        this.state = state;
-    }
-
-    /**
-     * Constructs a new appointment reserved by a group
-     * @param date The appointment's date
-     * @param timeWindowStart The start of the appointment's time window
-     * @param timeWindowEnd The end of the appointment's time window
-     * @param note The appointment's note
-     * @param state The appointment's state
-     * @param group The group that reserved the appointment
-     * @throws InvalidAppointmentStateException if the state is not State.RESERVED
-     */
-    public Appointment(LocalDate date, LocalTime timeWindowStart, LocalTime timeWindowEnd,
-                       String note, State state, Group group) throws InvalidAppointmentStateException {
-
-        this(date,timeWindowStart,timeWindowEnd,note);
-
-        if(state!=State.RESERVED){
-            throw new InvalidAppointmentStateException();
-        }
-        this.state = state;
-        this.group = group;
-    }
-
     /**
      * Constructs a new appointment booked by a group
      * @param date The appointment's date
@@ -85,11 +36,29 @@ public class Appointment {
                        State state, Group group, LocalTime bookingStart, LocalTime bookingEnd, String room)
             throws InvalidAppointmentStateException {
 
-        this(date,timeWindowStart,timeWindowEnd,note);
-
-        if(state!=State.BOOKED){
-            throw new InvalidAppointmentStateException();
+        switch (state){
+            case DEACTIVATED:
+            case FREE:
+                if(!(group==null && bookingStart==null && bookingEnd == null && room ==null)){
+                    throw new InvalidAppointmentStateException();
+                }
+                break;
+            case RESERVED:
+                if(!(group!=null && bookingStart==null && bookingEnd == null && room ==null)){
+                    throw new InvalidAppointmentStateException();
+                }
+                break;
+            case BOOKED:
+                if(!(group!=null && bookingStart != null)){
+                    throw new InvalidAppointmentStateException();
+                }
+                break;
         }
+
+        this.date = date;
+        this.timeWindowStart = timeWindowStart;
+        this.timeWindowEnd = timeWindowEnd;
+        this.note = note;
         this.state = state;
         this.group = group;
         this.bookingStart = bookingStart;

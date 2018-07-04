@@ -104,40 +104,36 @@ public class DBRepository {
 
             int groupNo = results.getInt("Groups");
             boolean hasReservation = !results.wasNull();
+            Group group = (results.wasNull()) ? null : new Group(groupNo);
 
-            Time bookStart = results.getTime("BookStart");
+            Time bookStartSQL = results.getTime("BookStart");
             boolean hasBooking = !results.wasNull();
-            Time bookEnd = results.getTime("BookEnd");
+            LocalTime bookingStart = results.wasNull() ? null : bookStartSQL.toLocalTime();
+
+            Time bookEndSQL = results.getTime("BookEnd");
+            LocalTime bookingEnd = (results.wasNull()) ? null : bookEndSQL.toLocalTime();
+
             String room = results.getString("Room");
 
             Appointment.State state;
 
-            Appointment appointment;
-
             if(!active) {
                 state= Appointment.State.DEACTIVATED;
-                appointment = new Appointment(date,startTime,endTime,note,state);
             }
             else{
                 if(hasReservation){
-                    if(hasBooking) {
+                    if(hasBooking)
                         state = Appointment.State.BOOKED;
-                        appointment=new Appointment(date,startTime,endTime,note,
-                                state,new Group(groupNo),bookStart.toLocalTime(),bookEnd.toLocalTime(),room);
-                    }
-                    else {
+                    else
                         state = Appointment.State.RESERVED;
-                        appointment=new Appointment(date,startTime,endTime,note,state,new Group(groupNo));
-                    }
                 }
-                else {
+                else
                     state = Appointment.State.FREE;
-                    appointment = new Appointment(date,startTime,endTime,note,state);
-                }
             }
 
-            appointments.add(appointment);
+            Appointment appointment = new Appointment(date,startTime,endTime,note,state,group,bookingStart,bookingEnd,room);
 
+            appointments.add(appointment);
         }
 
         return appointments;
