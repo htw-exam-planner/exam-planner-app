@@ -21,7 +21,7 @@ public class GroupSelectionController {
         List<Group> groups = null;
         try {
             groups = Group.all();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR,
                     "Fehler bei Datenbankverbindung");
             alert.showAndWait();
