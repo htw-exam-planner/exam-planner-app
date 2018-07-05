@@ -7,6 +7,7 @@ import models.InvalidAppointmentStateException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -19,15 +20,17 @@ public class DBRepository {
     /**
      * Gets the singleton instance of DBRepository
      * @return singleton instance of DBRepository
-     * @throws SQLException if the connection fails
-     * @throws ClassNotFoundException if the JDBC driver class can't be found
-     * @throws IOException if the configuration file can't be loaded
+     * @throws RepositoryConnectionException if the connection to the database fails
      */
-    public static DBRepository getInstance() throws SQLException, ClassNotFoundException, IOException{
-        if(instance==null){
-            instance = new DBRepository();
+    public static DBRepository getInstance() throws RepositoryConnectionException{
+        try {
+            if(instance==null){
+                instance = new DBRepository();
+            }
+            return instance;
+        } catch (Exception e){
+            throw new RepositoryConnectionException();
         }
-        return instance;
     }
 
     /**
@@ -138,4 +141,66 @@ public class DBRepository {
 
         return appointments;
     }
+
+    private void deleteAppointment(Appointment appointment) throws SQLException {
+        String query = "DELETE FROM Appointment WHERE Date = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        statement.setDate(1,Date.valueOf(appointment.getDate()));
+
+        statement.execute();
+    }
+
+    private void insertReservation(Group group, Date date) throws SQLException {
+        String query = "INSERT INTO Reservation (Groups, Appointment) VALUES (?, ?)";
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        statement.setInt(1,group.getGroupNumber());
+        statement.setDate(2,date);
+
+        statement.execute();
+    }
+
+    private void insertBooking(Group group, Time startTime, Time endTime, String room) throws SQLException {
+        String query = "INSERT INTO Booking (Reservation, StartTime, EndTime, Room) VALUES (?, ?, ?, ?);";
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        statement.setInt(1,group.getGroupNumber());
+        statement.setTime(2,startTime);
+        statement.setTime(3,endTime);
+        statement.setString(4,room);
+
+        statement.execute();
+    }
+
+    private void insertAppointment(Appointment appointment) throws SQLException {
+        String query = "INSERT INTO Appointment (Date, Activated, StartTime, EndTime, Note) VALUES (?, ?, ?, ?, ? );";
+        PreparedStatement statement=connection.prepareStatement(query);
+
+        statement.setDate(1,Date.valueOf(appointment.getDate()));
+        statement.setBoolean(2,(appointment.getState() != Appointment.State.DEACTIVATED));
+        statement.setTime(3,Time.valueOf(appointment.getTimeWindowStart()));
+        statement.setTime(4,Time.valueOf(appointment.getTimeWindowEnd()));
+        statement.setString(5,appointment.getNote());
+
+        statement.execute();
+
+        if(appointment.getState() == Appointment.State.RESERVED || appointment.getState() == Appointment.State.BOOKED){
+            insertReservation(appointment.getGroup(),Date.valueOf(appointment.getDate()));
+        }
+
+        if(appointment.getState() == Appointment.State.BOOKED){
+            insertBooking(appointment.getGroup(),
+                    Time.valueOf(appointment.getBookingStart()),
+                    Time.valueOf(appointment.getBookingEnd()),
+                    appointment.getRoom());
+        }
+    }
+
+    public void updateAppointment(Appointment appointment) throws SQLException {
+        deleteAppointment(appointment);
+        insertAppointment(appointment);
+    }
+
+
 }

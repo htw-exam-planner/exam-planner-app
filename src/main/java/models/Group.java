@@ -1,7 +1,9 @@
 package models;
 
 import repository.DBRepository;
+import repository.RepositoryConnectionException;
 
+import java.sql.SQLException;
 import java.util.*;
 
 public class Group {
@@ -13,6 +15,10 @@ public class Group {
      */
     public Group(int groupNumber){
         this.groupNumber = groupNumber;
+    }
+
+    public int getGroupNumber() {
+        return groupNumber;
     }
 
     /**
@@ -33,6 +39,63 @@ public class Group {
         }
 
         return groups;
+    }
+
+    /**
+     * Determines if the other object is a Group with the same number
+     * @param obj the object for comparison
+     * @return true if and only if obj is a Group with a group number equal to this, false otherwise
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Group){
+            Group other = (Group) obj;
+            return this.groupNumber == other.groupNumber;
+        }
+        else return false;
+    }
+
+    /**
+     * Determines if a group has a reservation
+     * @return true if there is an Appointment with state RESERVED reserved by this group, false otherwise
+     * @throws RepositoryConnectionException if the connection to the repository failed
+     * @throws InvalidAppointmentStateException if the data from the database is invalid
+     * @throws SQLException if an SQL error occurs
+     */
+    public boolean hasReservation() throws SQLException, RepositoryConnectionException, InvalidAppointmentStateException {
+        return Appointment.all().stream()
+                .filter(appointment -> appointment.getState() == Appointment.State.RESERVED)
+                .filter(appointment -> appointment.getGroup().equals(this)).count() != 0;
+    }
+
+    /**
+     * Determines if a group has a reservation
+     * @return true if there is an Appointment with state BOOKED booked by this group, false otherwise
+     * @throws RepositoryConnectionException if the connection to the repository failed
+     * @throws InvalidAppointmentStateException if the data from the database is invalid
+     * @throws SQLException if an SQL error occurs
+     */
+    public boolean hasBooking() throws SQLException, RepositoryConnectionException, InvalidAppointmentStateException {
+        return Appointment.all().stream()
+                .filter(appointment -> appointment.getState() == Appointment.State.BOOKED)
+                .filter(appointment -> appointment.getGroup().equals(this)).count() != 0;
+    }
+
+    /**
+     * Gets the Appointment booked or reserved by a group
+     * @return the Appointment booked or reserved by the group as an Optional, or an empty Optional if
+     * the group has not booked or reserved any Appointment
+     * @throws RepositoryConnectionException if the connection to the repository failed
+     * @throws InvalidAppointmentStateException if the data from the database is invalid
+     * @throws SQLException if an SQL error occurs
+     */
+    public Optional<Appointment> getAppointment() throws SQLException, RepositoryConnectionException, InvalidAppointmentStateException {
+        return Appointment.all().stream()
+                .filter(appointment ->
+                        (appointment.getState() == Appointment.State.BOOKED
+                                || appointment.getState()== Appointment.State.RESERVED))
+                .filter(appointment -> appointment.getGroup().equals(this))
+                .findFirst();
     }
 
     /**
