@@ -149,6 +149,11 @@ public class DBRepository {
         return appointments;
     }
 
+    /**
+     * Deletes the an appointment and, if present, its reservation or booking
+     * @param appointment the appointment to be deleted from the database
+     * @throws SQLException if an SQL error occurs
+     */
     private void deleteAppointment(Appointment appointment) throws SQLException {
         String query = "DELETE FROM Appointment WHERE Date = ?";
         PreparedStatement statement = connection.prepareStatement(query);
@@ -158,6 +163,12 @@ public class DBRepository {
         statement.execute();
     }
 
+    /**
+     * Insert into table Reservation
+     * @param group the group to be inserted
+     * @param date the date to be inserted
+     * @throws SQLException if an SQL error occurs
+     */
     private void insertReservation(Group group, Date date) throws SQLException {
         String query = "INSERT INTO Reservation (Groups, Appointment) VALUES (?, ?)";
         PreparedStatement statement = connection.prepareStatement(query);
@@ -168,6 +179,14 @@ public class DBRepository {
         statement.execute();
     }
 
+    /**
+     * Inserts into table Booking
+     * @param group the group to be inserted
+     * @param startTime the start time of the booking
+     * @param endTime the end time of the booking
+     * @param room the room of the booking
+     * @throws SQLException if an SQL error occurs
+     */
     private void insertBooking(Group group, Time startTime, Time endTime, String room) throws SQLException {
         String query = "INSERT INTO Booking (Reservation, StartTime, EndTime, Room) VALUES (?, ?, ?, ?);";
         PreparedStatement statement = connection.prepareStatement(query);
@@ -180,6 +199,11 @@ public class DBRepository {
         statement.execute();
     }
 
+    /**
+     * Inserts into the table Appointment, and, if applicable, into Reservation and Booking as well
+     * @param appointment the Appointment to be inserted
+     * @throws SQLException if an SQL error occurs
+     */
     private void insertAppointment(Appointment appointment) throws SQLException {
         String query = "INSERT INTO Appointment (Date, Activated, StartTime, EndTime, Note) VALUES (?, ?, ?, ?, ? );";
         PreparedStatement statement=connection.prepareStatement(query);
@@ -205,6 +229,12 @@ public class DBRepository {
         }
     }
 
+    /**
+     * Updates an Appointment, and, if applicable, its Reservation and Booking
+     * by deleting the old data and inserting the new data
+     * @param appointment The Appointment to be updated
+     * @throws SQLException if an SQL error occurs
+     */
     public void updateAppointment(Appointment appointment) throws SQLException {
         deleteAppointment(appointment);
         insertAppointment(appointment);
