@@ -1,8 +1,6 @@
 package repository;
 
-import models.Appointment;
-import models.Group;
-import models.InvalidAppointmentStateException;
+import models.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -120,21 +118,30 @@ public class DBRepository {
 
             Appointment.State state;
 
+            Appointment appointment;
+
             if(!active) {
                 state= Appointment.State.DEACTIVATED;
+                appointment = new Appointment(date,startTime,endTime,note,state);
             }
             else{
                 if(hasReservation){
-                    if(hasBooking)
+                    if(hasBooking){
                         state = Appointment.State.BOOKED;
-                    else
+                        Reservation reservation = new Reservation(group);
+                        appointment = new Appointment(date,startTime,endTime,note,state,reservation);
+                    }
+                    else {
                         state = Appointment.State.RESERVED;
+                        Booking booking = new Booking(group,bookingStart,bookingEnd,room);
+                        appointment = new Appointment(date,startTime,endTime,note,state,booking);
+                    }
                 }
-                else
+                else{
                     state = Appointment.State.FREE;
+                    appointment = new Appointment(date,startTime,endTime,note,state);
+                }
             }
-
-            Appointment appointment = new Appointment(date,startTime,endTime,note,state,group,bookingStart,bookingEnd,room);
 
             appointments.add(appointment);
         }
@@ -185,15 +192,16 @@ public class DBRepository {
 
         statement.execute();
 
-        if(appointment.getState() == Appointment.State.RESERVED || appointment.getState() == Appointment.State.BOOKED){
-            insertReservation(appointment.getGroup(),Date.valueOf(appointment.getDate()));
+        if(appointment.getState() == Appointment.State.RESERVED){
+            insertReservation(appointment.getReservation().getGroup(),Date.valueOf(appointment.getDate()));
         }
 
         if(appointment.getState() == Appointment.State.BOOKED){
-            insertBooking(appointment.getGroup(),
-                    Time.valueOf(appointment.getBookingStart()),
-                    Time.valueOf(appointment.getBookingEnd()),
-                    appointment.getRoom());
+            insertReservation(appointment.getBooking().getGroup(),Date.valueOf(appointment.getDate()));
+            insertBooking(appointment.getBooking().getGroup(),
+                    Time.valueOf(appointment.getBooking().getStartTime()),
+                    Time.valueOf(appointment.getBooking().getEndTime()),
+                    appointment.getBooking().getRoom());
         }
     }
 

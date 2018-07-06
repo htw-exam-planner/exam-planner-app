@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Appointment {
     public enum State {FREE,DEACTIVATED,RESERVED,BOOKED}
@@ -17,56 +16,74 @@ public class Appointment {
     private LocalTime timeWindowEnd;
     private String note;
     private State state;
-    private Group group;
-    private LocalTime bookingStart;
-    private LocalTime bookingEnd;
-    private String room;
+    private Reservation reservation=null;
+    private Booking booking=null;
 
     /**
-     * Constructs a new appointment booked by a group
+     * General constructor used by other constructors for fields present in every state
+     * @param date The appointment's date
+     * @param timeWindowStart The start of the appointment's time window
+     * @param timeWindowEnd The end of the appointment's time window
+     * @param note The appointment's note
+     */
+    private Appointment(LocalDate date, LocalTime timeWindowStart, LocalTime timeWindowEnd, String note) {
+        this.date = date;
+        this.timeWindowStart = timeWindowStart;
+        this.timeWindowEnd = timeWindowEnd;
+        this.note = note;
+    }
+
+    /**
+     * Constructor for free or deactivated appointments
      * @param date The appointment's date
      * @param timeWindowStart The start of the appointment's time window
      * @param timeWindowEnd The end of the appointment's time window
      * @param note The appointment's note
      * @param state The appointment's state
-     * @param group The group that booked the appointment
-     * @param bookingStart The start time of the booking
-     * @param bookingEnd The end time of the booking
-     * @param room The room of the booking
+     * @throws InvalidAppointmentStateException if the state is not State.FREE or State.DEACTIVATED
+     */
+    public Appointment(LocalDate date, LocalTime timeWindowStart, LocalTime timeWindowEnd, String note, State state)
+            throws InvalidAppointmentStateException {
+        this(date,timeWindowStart,timeWindowEnd,note);
+
+        if(!(state==State.FREE || state == State.DEACTIVATED)) throw new InvalidAppointmentStateException();
+        this.state = state;
+    }
+
+    /**
+     * Constructor for reserved appointments
+     * @param date The appointment's date
+     * @param timeWindowStart The start of the appointment's time window
+     * @param timeWindowEnd The end of the appointment's time window
+     * @param note The appointment's note
+     * @param state The appointment's state
+     * @param reservation The appointment's reservation
+     * @throws InvalidAppointmentStateException if the state is not State.RESERVED
+     */
+    public Appointment(LocalDate date, LocalTime timeWindowStart, LocalTime timeWindowEnd, String note, State state, Reservation reservation) throws InvalidAppointmentStateException {
+        this(date,timeWindowStart,timeWindowEnd,note);
+
+        if(state!=State.RESERVED) throw new InvalidAppointmentStateException();
+        this.state = state;
+        this.reservation = reservation;
+    }
+
+    /**
+     * Constructor for booked appointments
+     * @param date The appointment's date
+     * @param timeWindowStart The start of the appointment's time window
+     * @param timeWindowEnd The end of the appointment's time window
+     * @param note The appointment's note
+     * @param state The appointment's state
+     * @param booking The appointment's booking
      * @throws InvalidAppointmentStateException if the state is not State.BOOKED
      */
-    public Appointment(LocalDate date, LocalTime timeWindowStart, LocalTime timeWindowEnd, String note,
-                       State state, Group group, LocalTime bookingStart, LocalTime bookingEnd, String room)
-            throws InvalidAppointmentStateException {
+    public Appointment(LocalDate date, LocalTime timeWindowStart, LocalTime timeWindowEnd, String note, State state, Booking booking) throws InvalidAppointmentStateException {
+        this(date,timeWindowStart,timeWindowEnd,note);
 
-        switch (state){
-            case DEACTIVATED:
-            case FREE:
-                if(!(group==null && bookingStart==null && bookingEnd == null && room ==null)){
-                    throw new InvalidAppointmentStateException();
-                }
-                break;
-            case RESERVED:
-                if(!(group!=null && bookingStart==null && bookingEnd == null && room ==null)){
-                    throw new InvalidAppointmentStateException();
-                }
-                break;
-            case BOOKED:
-                if(!(group!=null && bookingStart != null)){
-                    throw new InvalidAppointmentStateException();
-                }
-                break;
-        }
-
-        this.date = date;
-        this.timeWindowStart = timeWindowStart;
-        this.timeWindowEnd = timeWindowEnd;
-        this.note = note;
+        if(state!=State.BOOKED) throw new InvalidAppointmentStateException();
         this.state = state;
-        this.group = group;
-        this.bookingStart = bookingStart;
-        this.bookingEnd = bookingEnd;
-        this.room = room;
+        this.booking = booking;
     }
 
     /**
@@ -110,35 +127,19 @@ public class Appointment {
     }
 
     /**
-     * Gets the group that booked or reserved the appointment
-     * @return the group that booked or reserved the appointment or null if the appointment is free or deactivated
+     * Gets the appointment's reservation
+     * @return the reservation if the appointment is reserved, null otherwise
      */
-    public Group getGroup() {
-        return group;
+    public Reservation getReservation() {
+        return reservation;
     }
 
     /**
-     * Gets the start of the booked time
-     * @return the start of the booked time or null if the appointment is not booked
+     * Gets the appointment's booking
+     * @return the booking if the appointment is booked, null otherwise
      */
-    public LocalTime getBookingStart() {
-        return bookingStart;
-    }
-
-    /**
-     * Gets the end of the booked time
-     * @return the end of the booked time or null if the appointment is not booked or the end time is not set
-     */
-    public LocalTime getBookingEnd() {
-        return bookingEnd;
-    }
-
-    /**
-     * Gets the room of the booked appointment
-     * @return the room or null if the room is not set or the appointment is not booked
-     */
-    public String getRoom() {
-        return room;
+    public Booking getBooking() {
+        return booking;
     }
 
     /**
@@ -159,7 +160,7 @@ public class Appointment {
         }
 
         state = State.RESERVED;
-        group=reservingGroup;
+        reservation = new Reservation(reservingGroup);
 
         DBRepository.getInstance().updateAppointment(this);
     }
@@ -175,7 +176,7 @@ public class Appointment {
 
         state = State.FREE;
 
-        group = null;
+        reservation = null;
 
         DBRepository.getInstance().updateAppointment(this);
     }
@@ -194,19 +195,18 @@ public class Appointment {
             RepositoryConnectionException, InvalidAppointmentStateException {
         if(state == State.DEACTIVATED || state == State.BOOKED) throw new OperationNotAllowedException();
 
-        if(state == State.RESERVED && !this.group.equals(bookingGroup)) throw new OperationNotAllowedException();
+        if(state == State.RESERVED && !this.reservation.getGroup().equals(bookingGroup))
+            throw new OperationNotAllowedException();
 
         if(bookingGroup.hasBooking()) throw new OperationNotAllowedException();
 
         if(bookingGroup.hasReservation()) {
             Appointment reservedAppointment = bookingGroup.getAppointment().get();
-
             reservedAppointment.cancelReservation();
         }
 
         this.state = State.BOOKED;
-        this.group = bookingGroup;
-        this.bookingStart = bookingStart;
+        this.booking = new Booking(bookingGroup,bookingStart,null,null);
 
         DBRepository.getInstance().updateAppointment(this);
     }

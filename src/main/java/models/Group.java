@@ -65,7 +65,7 @@ public class Group {
     public boolean hasReservation() throws SQLException, RepositoryConnectionException, InvalidAppointmentStateException {
         return Appointment.all().stream()
                 .filter(appointment -> appointment.getState() == Appointment.State.RESERVED)
-                .filter(appointment -> appointment.getGroup().equals(this)).count() != 0;
+                .filter(appointment -> appointment.getReservation().getGroup().equals(this)).count() != 0;
     }
 
     /**
@@ -78,7 +78,7 @@ public class Group {
     public boolean hasBooking() throws SQLException, RepositoryConnectionException, InvalidAppointmentStateException {
         return Appointment.all().stream()
                 .filter(appointment -> appointment.getState() == Appointment.State.BOOKED)
-                .filter(appointment -> appointment.getGroup().equals(this)).count() != 0;
+                .filter(appointment -> appointment.getBooking().getGroup().equals(this)).count() != 0;
     }
 
     /**
@@ -90,12 +90,19 @@ public class Group {
      * @throws SQLException if an SQL error occurs
      */
     public Optional<Appointment> getAppointment() throws SQLException, RepositoryConnectionException, InvalidAppointmentStateException {
-        return Appointment.all().stream()
+        Optional<Appointment> bookedAppointment =  Appointment.all().stream()
                 .filter(appointment ->
-                        (appointment.getState() == Appointment.State.BOOKED
-                                || appointment.getState()== Appointment.State.RESERVED))
-                .filter(appointment -> appointment.getGroup().equals(this))
+                        (appointment.getState() == Appointment.State.BOOKED))
+                .filter(appointment -> appointment.getBooking().getGroup().equals(this))
                 .findFirst();
+
+        Optional<Appointment> reservedAppointment =  Appointment.all().stream()
+                .filter(appointment ->
+                        (appointment.getState() == Appointment.State.RESERVED))
+                .filter(appointment -> appointment.getReservation().getGroup().equals(this))
+                .findFirst();
+
+        return bookedAppointment.isPresent() ? bookedAppointment : reservedAppointment;
     }
 
     /**
