@@ -139,7 +139,7 @@ public class Appointment {
      * @throws SQLException if an SQL error occurs
      */
     public void reserve(Group reservingGroup) throws OperationNotAllowedException, SQLException,
-            RepositoryConnectionException, InvalidAppointmentStateException {
+            RepositoryConnectionException, InvalidAppointmentStateException, InvalidTimeWindowException {
         if(state != State.FREE) throw new OperationNotAllowedException();
 
         if(reservingGroup.hasBooking() || reservingGroup.hasReservation()){
@@ -176,10 +176,11 @@ public class Appointment {
      * the booking group has already booked or reserved, or the start time is not within the time window
      * @throws RepositoryConnectionException if the connection to the repository fails
      * @throws InvalidAppointmentStateException if the data from the database is invalid
+     * @throws InvalidTimeWindowException if an appointment in the database has an invalid time window
      * @throws SQLException if an SQL error occurs
      */
     public void book(Group bookingGroup, LocalTime bookingStart) throws OperationNotAllowedException, SQLException,
-            RepositoryConnectionException, InvalidAppointmentStateException {
+            RepositoryConnectionException, InvalidAppointmentStateException, InvalidTimeWindowException {
         if(state == State.DEACTIVATED || state == State.BOOKED) throw new OperationNotAllowedException();
 
         if(state == State.RESERVED && !this.reservation.getGroup().equals(bookingGroup))
@@ -256,6 +257,7 @@ public class Appointment {
      * Deletes any Appointments previously in the database
      * @param startDate The start date. Must be a Monday
      * @throws InvalidAppointmentStateException if the start date is not a Monday or an Invalid Appointment is constructed
+     * @throws InvalidTimeWindowException if an appointment in the database has an invalid time window
      * @throws RepositoryConnectionException if the connection to the repository fails
      * @throws SQLException if an SQL error occurs
      */
