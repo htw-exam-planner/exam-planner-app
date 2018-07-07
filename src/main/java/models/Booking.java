@@ -1,62 +1,58 @@
 package models;
 
-import java.time.LocalTime;
-
 public class Booking {
     private Group group;
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private TimeWindow timeWindow;
     private String room;
 
-    public Booking(Group group, LocalTime startTime, LocalTime endTime, String room) {
+    /**
+     * Constructs a new Booking
+     * @param group the Booking's group
+     * @param timeWindow the Booking's time window
+     * @param room the Booking's room
+     */
+    public Booking(Group group, TimeWindow timeWindow, String room) {
         this.group = group;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.timeWindow = timeWindow;
         this.room = room;
     }
 
+    /**
+     * Gets the Booking's group
+     * @return the group that booked the appointment
+     */
     public Group getGroup() {
         return group;
     }
 
-    public LocalTime getStartTime() {
-        return startTime;
+    /**
+     * Gets the booking's time window
+     * @return the time window
+     */
+    public TimeWindow getTimeWindow() {
+        return timeWindow;
     }
 
-    public LocalTime getEndTime() {
-        return endTime;
-    }
-
+    /**
+     * Gets the Booking's room
+     * @return the room
+     */
     public String getRoom() {
         return room;
     }
 
     /**
-     * Sets the booking's start time
-     * @param startTime the start time of the booking
-     * @throws InvalidAppointmentStateException if the start time is after the Booking's end time (if set)
+     * Sets the booking's time window
+     * @param timeWindow the time window
      */
-    public void setStartTime(LocalTime startTime) throws InvalidAppointmentStateException {
-        if(endTime!=null){
-            if(startTime.isAfter(endTime))
-                throw new InvalidAppointmentStateException();
-        }
-
-        this.startTime = startTime;
+    public void setTimeWindow(TimeWindow timeWindow) {
+        this.timeWindow = timeWindow;
     }
 
     /**
-     * Sets the Booking's end time
-     * @param endTime the end time of the Booking
-     * @throws InvalidAppointmentStateException if the end time is before the start time
+     * sets the booking's room
+     * @param room the room
      */
-    public void setEndTime(LocalTime endTime) throws InvalidAppointmentStateException {
-        if(endTime.isBefore(startTime))
-            throw new InvalidAppointmentStateException();
-
-        this.endTime = endTime;
-    }
-
     public void setRoom(String room) {
         this.room = room;
     }

@@ -7,18 +7,18 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class Group {
-    private int groupNumber;
+    private int number;
 
     /**
      * Constructs a new group
-     * @param groupNumber Number of the group
+     * @param number Number of the group
      */
-    public Group(int groupNumber){
-        this.groupNumber = groupNumber;
+    public Group(int number){
+        this.number = number;
     }
 
-    public int getGroupNumber() {
-        return groupNumber;
+    public int getNumber() {
+        return number;
     }
 
     /**
@@ -31,15 +31,15 @@ public class Group {
         return DBRepository.getInstance().getGroups();
     }
 
-    public static void generate(int count) throws RepositoryConnectionException, SQLException {
-        if(count < 1)
+    public static void generate(int numberOfGroups) throws RepositoryConnectionException, SQLException {
+        if(numberOfGroups < 1)
             throw new IllegalArgumentException();
 
         DBRepository repository = DBRepository.getInstance();
 
         repository.deleteAllGroups();
 
-        for(int i = 1 ; i <= count ; i++){
+        for(int i = 1 ; i <= numberOfGroups ; i++){
             Group group = new Group(i);
             repository.insertGroup(group);
         }
@@ -57,10 +57,10 @@ public class Group {
      */
     public static Group create() throws RepositoryConnectionException, SQLException {
         Optional<Group> maxGroup = all().stream()
-                .sorted(Comparator.comparing(Group::getGroupNumber).reversed())
+                .sorted(Comparator.comparing(Group::getNumber).reversed())
                 .findFirst();
 
-        int groupNo = maxGroup.isPresent() ? maxGroup.get().groupNumber + 1 : 1;
+        int groupNo = maxGroup.map(g -> g.number + 1).orElse(1);
 
         Group group = new Group(groupNo);
 
@@ -76,11 +76,7 @@ public class Group {
      */
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof Group){
-            Group other = (Group) obj;
-            return this.groupNumber == other.groupNumber;
-        }
-        else return false;
+        return (obj instanceof Group) && (this.number == ((Group) obj).number);
     }
 
     /**
@@ -88,9 +84,10 @@ public class Group {
      * @return true if there is an Appointment with state RESERVED reserved by this group, false otherwise
      * @throws RepositoryConnectionException if the connection to the repository failed
      * @throws InvalidAppointmentStateException if the data from the database is invalid
+     * @throws InvalidTimeWindowException if the data from the database is invalid
      * @throws SQLException if an SQL error occurs
      */
-    public boolean hasReservation() throws SQLException, RepositoryConnectionException, InvalidAppointmentStateException {
+    public boolean hasReservation() throws SQLException, RepositoryConnectionException, InvalidAppointmentStateException, InvalidTimeWindowException {
         return Appointment.all().stream()
                 .filter(appointment -> appointment.getState() == Appointment.State.RESERVED)
                 .filter(appointment -> appointment.getReservation().getGroup().equals(this)).count() != 0;
@@ -101,9 +98,10 @@ public class Group {
      * @return true if there is an Appointment with state BOOKED booked by this group, false otherwise
      * @throws RepositoryConnectionException if the connection to the repository failed
      * @throws InvalidAppointmentStateException if the data from the database is invalid
+     * @throws InvalidTimeWindowException if the data from the database is invalid
      * @throws SQLException if an SQL error occurs
      */
-    public boolean hasBooking() throws SQLException, RepositoryConnectionException, InvalidAppointmentStateException {
+    public boolean hasBooking() throws SQLException, RepositoryConnectionException, InvalidAppointmentStateException, InvalidTimeWindowException {
         return Appointment.all().stream()
                 .filter(appointment -> appointment.getState() == Appointment.State.BOOKED)
                 .filter(appointment -> appointment.getBooking().getGroup().equals(this)).count() != 0;
@@ -115,9 +113,10 @@ public class Group {
      * the group has not booked or reserved any Appointment
      * @throws RepositoryConnectionException if the connection to the repository failed
      * @throws InvalidAppointmentStateException if the data from the database is invalid
+     * @throws InvalidTimeWindowException if the data from the database is invalid
      * @throws SQLException if an SQL error occurs
      */
-    public Optional<Appointment> getAppointment() throws SQLException, RepositoryConnectionException, InvalidAppointmentStateException {
+    public Optional<Appointment> getAppointment() throws SQLException, RepositoryConnectionException, InvalidAppointmentStateException, InvalidTimeWindowException {
         Optional<Appointment> bookedAppointment =  Appointment.all().stream()
                 .filter(appointment ->
                         (appointment.getState() == Appointment.State.BOOKED))
@@ -139,6 +138,6 @@ public class Group {
      */
     @Override
     public String toString() {
-        return "Gruppe "+groupNumber;
+        return "Gruppe "+ number;
     }
 }

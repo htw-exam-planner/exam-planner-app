@@ -81,8 +81,9 @@ public class DBRepository {
      * @return A list of all appointments
      * @throws SQLException if SQL execution fails
      * @throws InvalidAppointmentStateException if an appointment has an invalid state
+     * @throws InvalidTimeWindowException if an appointment's or booking's time window is invalid
      */
-    public List<Appointment> getAppointments() throws SQLException, InvalidAppointmentStateException {
+    public List<Appointment> getAppointments() throws SQLException, InvalidAppointmentStateException, InvalidTimeWindowException {
         final String query ="SELECT A.Date, A.Activated, A.StartTime, A.EndTime, A.Note,\n" +
                 "R.Groups, B.StartTime AS BookStart, B.EndTime AS BookEnd, B.Room\n" +
                 "FROM Appointment A\n" +
@@ -99,6 +100,7 @@ public class DBRepository {
             boolean active = results.getBoolean("Activated");
             LocalTime startTime = results.getTime("StartTime").toLocalTime();
             LocalTime endTime = results.getTime("EndTime").toLocalTime();
+            TimeWindow timeWindow = new TimeWindow(startTime,endTime);
             String note = results.getString("Note");
 
             int groupNo = results.getInt("Groups");
@@ -112,6 +114,8 @@ public class DBRepository {
             Time bookEndSQL = results.getTime("BookEnd");
             LocalTime bookingEnd = (results.wasNull()) ? null : bookEndSQL.toLocalTime();
 
+            TimeWindow bookingWindow = new TimeWindow(bookingStart,bookingEnd);
+
             String room = results.getString("Room");
 
             Appointment.State state;
@@ -120,24 +124,24 @@ public class DBRepository {
 
             if(!active) {
                 state= Appointment.State.DEACTIVATED;
-                appointment = new Appointment(date,startTime,endTime,note,state);
+                appointment = new Appointment(date,timeWindow,note,state);
             }
             else{
                 if(hasReservation){
                     if(hasBooking){
                         state = Appointment.State.BOOKED;
                         Reservation reservation = new Reservation(group);
-                        appointment = new Appointment(date,startTime,endTime,note,state,reservation);
+                        appointment = new Appointment(date,timeWindow,note,state,reservation);
                     }
                     else {
                         state = Appointment.State.RESERVED;
-                        Booking booking = new Booking(group,bookingStart,bookingEnd,room);
-                        appointment = new Appointment(date,startTime,endTime,note,state,booking);
+                        Booking booking = new Booking(group,bookingWindow,room);
+                        appointment = new Appointment(date,timeWindow,note,state,booking);
                     }
                 }
                 else{
                     state = Appointment.State.FREE;
-                    appointment = new Appointment(date,startTime,endTime,note,state);
+                    appointment = new Appointment(date,timeWindow,note,state);
                 }
             }
 
@@ -170,7 +174,7 @@ public class DBRepository {
         String query = "DELETE FROM Groups WHERE GroupNumber = ?";
         PreparedStatement statement = connection.prepareStatement(query);
 
-        statement.setInt(1,group.getGroupNumber());
+        statement.setInt(1,group.getNumber());
 
         statement.execute();
     }
@@ -207,7 +211,7 @@ public class DBRepository {
         String query = "INSERT INTO Reservation (Groups, Appointment) VALUES (?, ?)";
         PreparedStatement statement = connection.prepareStatement(query);
 
-        statement.setInt(1,group.getGroupNumber());
+        statement.setInt(1,group.getNumber());
         statement.setDate(2,date);
 
         statement.execute();
@@ -225,7 +229,7 @@ public class DBRepository {
         String query = "INSERT INTO Booking (Reservation, StartTime, EndTime, Room) VALUES (?, ?, ?, ?);";
         PreparedStatement statement = connection.prepareStatement(query);
 
-        statement.setInt(1,group.getGroupNumber());
+        statement.setInt(1,group.getNumber());
         statement.setTime(2,startTime);
         statement.setTime(3,endTime);
         statement.setString(4,room);
@@ -244,8 +248,8 @@ public class DBRepository {
 
         statement.setDate(1,Date.valueOf(appointment.getDate()));
         statement.setBoolean(2,(appointment.getState() != Appointment.State.DEACTIVATED));
-        statement.setTime(3,Time.valueOf(appointment.getTimeWindowStart()));
-        statement.setTime(4,Time.valueOf(appointment.getTimeWindowEnd()));
+        statement.setTime(3,Time.valueOf(appointment.getTimeWindow().getStart()));
+        statement.setTime(4,Time.valueOf(appointment.getTimeWindow().getStart()));
         statement.setString(5,appointment.getNote());
 
         statement.execute();
@@ -257,8 +261,8 @@ public class DBRepository {
         if(appointment.getState() == Appointment.State.BOOKED){
             insertReservation(appointment.getBooking().getGroup(),Date.valueOf(appointment.getDate()));
             insertBooking(appointment.getBooking().getGroup(),
-                    Time.valueOf(appointment.getBooking().getStartTime()),
-                    Time.valueOf(appointment.getBooking().getEndTime()),
+                    Time.valueOf(appointment.getBooking().getTimeWindow().getStart()),
+                    Time.valueOf(appointment.getBooking().getTimeWindow().getStart()),
                     appointment.getBooking().getRoom());
         }
     }
@@ -272,7 +276,7 @@ public class DBRepository {
         String query = "INSERT INTO Groups (GroupNumber) VALUES (?);";
         PreparedStatement statement = connection.prepareStatement(query);
 
-        statement.setInt(1,group.getGroupNumber());
+        statement.setInt(1,group.getNumber());
 
         statement.execute();
     }

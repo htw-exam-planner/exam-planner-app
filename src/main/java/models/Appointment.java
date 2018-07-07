@@ -13,8 +13,7 @@ public class Appointment {
     public enum State {FREE,DEACTIVATED,RESERVED,BOOKED}
 
     private LocalDate date;
-    private LocalTime timeWindowStart;
-    private LocalTime timeWindowEnd;
+    private TimeWindow timeWindow;
     private String note;
     private State state;
     private Reservation reservation=null;
@@ -23,32 +22,26 @@ public class Appointment {
     /**
      * General constructor used by other constructors for fields present in every state
      * @param date The appointment's date
-     * @param timeWindowStart The start of the appointment's time window
-     * @param timeWindowEnd The end of the appointment's time window
+     * @param timeWindow the appointment's time window
      * @param note The appointment's note
-     * @throws InvalidAppointmentStateException if the end time is before the start time
      */
-    private Appointment(LocalDate date, LocalTime timeWindowStart, LocalTime timeWindowEnd, String note) throws InvalidAppointmentStateException {
-        if(timeWindowEnd.isBefore(timeWindowStart)) throw new InvalidAppointmentStateException();
-
+    private Appointment(LocalDate date, TimeWindow timeWindow, String note) {
         this.date = date;
-        this.timeWindowStart = timeWindowStart;
-        this.timeWindowEnd = timeWindowEnd;
+        this.timeWindow = timeWindow;
         this.note = note;
     }
 
     /**
      * Constructor for free or deactivated appointments
      * @param date The appointment's date
-     * @param timeWindowStart The start of the appointment's time window
-     * @param timeWindowEnd The end of the appointment's time window
+     * @param timeWindow The appointment's time window
      * @param note The appointment's note
      * @param state The appointment's state
      * @throws InvalidAppointmentStateException if the state is not State.FREE or State.DEACTIVATED
      */
-    public Appointment(LocalDate date, LocalTime timeWindowStart, LocalTime timeWindowEnd, String note, State state)
+    public Appointment(LocalDate date, TimeWindow timeWindow, String note, State state)
             throws InvalidAppointmentStateException {
-        this(date,timeWindowStart,timeWindowEnd,note);
+        this(date,timeWindow,note);
 
         if(!(state==State.FREE || state == State.DEACTIVATED)) throw new InvalidAppointmentStateException();
         this.state = state;
@@ -57,15 +50,14 @@ public class Appointment {
     /**
      * Constructor for reserved appointments
      * @param date The appointment's date
-     * @param timeWindowStart The start of the appointment's time window
-     * @param timeWindowEnd The end of the appointment's time window
+     * @param timeWindow the appointment's time window
      * @param note The appointment's note
      * @param state The appointment's state
      * @param reservation The appointment's reservation
      * @throws InvalidAppointmentStateException if the state is not State.RESERVED
      */
-    public Appointment(LocalDate date, LocalTime timeWindowStart, LocalTime timeWindowEnd, String note, State state, Reservation reservation) throws InvalidAppointmentStateException {
-        this(date,timeWindowStart,timeWindowEnd,note);
+    public Appointment(LocalDate date, TimeWindow timeWindow, String note, State state, Reservation reservation) throws InvalidAppointmentStateException {
+        this(date,timeWindow,note);
 
         if(state!=State.RESERVED) throw new InvalidAppointmentStateException();
         this.state = state;
@@ -75,15 +67,14 @@ public class Appointment {
     /**
      * Constructor for booked appointments
      * @param date The appointment's date
-     * @param timeWindowStart The start of the appointment's time window
-     * @param timeWindowEnd The end of the appointment's time window
+     * @param timeWindow the appointment's time window
      * @param note The appointment's note
      * @param state The appointment's state
      * @param booking The appointment's booking
      * @throws InvalidAppointmentStateException if the state is not State.BOOKED
      */
-    public Appointment(LocalDate date, LocalTime timeWindowStart, LocalTime timeWindowEnd, String note, State state, Booking booking) throws InvalidAppointmentStateException {
-        this(date,timeWindowStart,timeWindowEnd,note);
+    public Appointment(LocalDate date, TimeWindow timeWindow, String note, State state, Booking booking) throws InvalidAppointmentStateException {
+        this(date,timeWindow,note);
 
         if(state!=State.BOOKED) throw new InvalidAppointmentStateException();
         this.state = state;
@@ -99,19 +90,11 @@ public class Appointment {
     }
 
     /**
-     * Gets the start of the time window
-     * @return the start of the time window
+     * Gets the appointment's time window
+     * @return
      */
-    public LocalTime getTimeWindowStart() {
-        return timeWindowStart;
-    }
-
-    /**
-     * Gets the end of the time window
-     * @return the end of the time window
-     */
-    public LocalTime getTimeWindowEnd() {
-        return timeWindowEnd;
+    public TimeWindow getTimeWindow() {
+        return timeWindow;
     }
 
     /**
@@ -204,7 +187,7 @@ public class Appointment {
 
         if(bookingGroup.hasBooking()) throw new OperationNotAllowedException();
 
-        if(bookingStart.isBefore(timeWindowStart) || bookingStart.isAfter(timeWindowEnd))
+        if(!timeWindow.contains(bookingStart))
             throw new OperationNotAllowedException();
 
         if(bookingGroup.hasReservation()) {
@@ -213,7 +196,7 @@ public class Appointment {
         }
 
         this.state = State.BOOKED;
-        this.booking = new Booking(bookingGroup,bookingStart,null,null);
+        this.booking = new Booking(bookingGroup,new TimeWindow(bookingStart),null);
 
         DBRepository.getInstance().updateAppointment(this);
     }
@@ -246,17 +229,12 @@ public class Appointment {
 
     /**
      * Sets the appointment's time window
-     * @param start the start time of the time window
-     * @param end the end time of the time window
-     * @throws InvalidAppointmentStateException start time is after the end time
+     * @param timeWindow the new time window
      * @throws RepositoryConnectionException if the connection to the repository fails
      * @throws SQLException if an SQL error occurs
      */
-    public void setTimeWindow(LocalTime start, LocalTime end) throws InvalidAppointmentStateException, RepositoryConnectionException, SQLException {
-        if(start.isAfter(end)) throw new InvalidAppointmentStateException();
-
-        timeWindowStart=start;
-        timeWindowEnd=end;
+    public void setTimeWindow(TimeWindow timeWindow) throws RepositoryConnectionException, SQLException {
+        this.timeWindow = timeWindow;
 
         DBRepository.getInstance().updateAppointment(this);
     }
@@ -282,25 +260,31 @@ public class Appointment {
      * @throws SQLException if an SQL error occurs
      */
     public static void generate(LocalDate startDate) throws InvalidAppointmentStateException, RepositoryConnectionException, SQLException {
-        if(!(startDate.getDayOfWeek() == DayOfWeek.MONDAY))
-            throw new InvalidAppointmentStateException();
+        try {
+            if(!(startDate.getDayOfWeek() == DayOfWeek.MONDAY))
+                throw new InvalidAppointmentStateException();
 
-        DBRepository repository = DBRepository.getInstance();
+            DBRepository repository = DBRepository.getInstance();
 
-        repository.deleteAllAppointments();
+            repository.deleteAllAppointments();
 
-        final LocalTime start = LocalTime.of(8,30);
-        final LocalTime end = LocalTime.of(16,40);
-        final String note = null;
-        final State state = State.FREE;
+            final LocalTime start = LocalTime.of(8,30);
+            final LocalTime end = LocalTime.of(16,40);
+            final TimeWindow timeWindow = new TimeWindow(start,end);
 
-        for(int week =0 ; week < 3 ; week++){
-            for(int day=0 ; day < 5 ; day++){
-                LocalDate date = startDate.plusDays(7*week + day);
+            final String note = null;
+            final State state = State.FREE;
 
-                Appointment appointment = new Appointment(date,start,end,null,state);
-                repository.insertAppointment(appointment);
+            for(int week =0 ; week < 3 ; week++){
+                for(int day=0 ; day < 5 ; day++){
+                    LocalDate date = startDate.plusDays(7*week + day);
+
+                    Appointment appointment = new Appointment(date,timeWindow,null,state);
+                    repository.insertAppointment(appointment);
+                }
             }
+        } catch (InvalidTimeWindowException e) {
+            //Won't happen because 16:40 is after 8:30
         }
     }
 
@@ -309,10 +293,11 @@ public class Appointment {
      * @return A list of all appointments
      * @throws RepositoryConnectionException if the connection to the repository failed
      * @throws InvalidAppointmentStateException if the data from the database is invalid
+     * @throws InvalidTimeWindowException if an appointment in the database has an invalid time window
      * @throws SQLException if an SQL error occurs
      */
     public static List<Appointment> all() throws RepositoryConnectionException,
-            InvalidAppointmentStateException, SQLException {
+            InvalidAppointmentStateException, SQLException, InvalidTimeWindowException {
         DBRepository repository = DBRepository.getInstance();
 
         return repository.getAppointments();
