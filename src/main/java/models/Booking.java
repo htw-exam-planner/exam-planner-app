@@ -31,5 +31,33 @@ public class Booking {
         return room;
     }
 
+    /**
+     * Sets the booking's start time
+     * @param startTime the start time of the booking
+     * @throws InvalidAppointmentStateException if the start time is after the Booking's end time (if set)
+     */
+    public void setStartTime(LocalTime startTime) throws InvalidAppointmentStateException {
+        if(endTime!=null){
+            if(startTime.isAfter(endTime))
+                throw new InvalidAppointmentStateException();
+        }
 
+        this.startTime = startTime;
+    }
+
+    /**
+     * Sets the Booking's end time
+     * @param endTime the end time of the Booking
+     * @throws InvalidAppointmentStateException if the end time is before the start time
+     */
+    public void setEndTime(LocalTime endTime) throws InvalidAppointmentStateException {
+        if(endTime.isBefore(startTime))
+            throw new InvalidAppointmentStateException();
+
+        this.endTime = endTime;
+    }
+
+    public void setRoom(String room) {
+        this.room = room;
+    }
 }

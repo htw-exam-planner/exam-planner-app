@@ -76,8 +76,6 @@ public class DBRepository {
         return groups;
     }
 
-
-
     /**
      * Gets all appintments from the database
      * @return A list of all appointments
@@ -164,6 +162,42 @@ public class DBRepository {
     }
 
     /**
+     * Deletes a single Group from the database
+     * @param group the group to be deleted
+     * @throws SQLException if an SQL error occurs
+     */
+    public void deleteGroup(Group group) throws SQLException {
+        String query = "DELETE FROM Groups WHERE GroupNumber = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        statement.setInt(1,group.getGroupNumber());
+
+        statement.execute();
+    }
+
+    /**
+     * Deletes all Appointments from the database, including their Reservations and Bookings
+     * @throws SQLException if an SQL error occurs
+     */
+    public void deleteAllAppointments() throws SQLException {
+        String query = "DELETE FROM Appointment;";
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        statement.execute();
+    }
+
+    /**
+     * Deletes all Groups from the database
+     * @throws SQLException if an SQL error occurs
+     */
+    public void deleteAllGroups() throws SQLException {
+        String query ="DELETE FROM Groups;";
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        statement.execute();
+    }
+
+    /**
      * Insert into table Reservation
      * @param group the group to be inserted
      * @param date the date to be inserted
@@ -204,7 +238,7 @@ public class DBRepository {
      * @param appointment the Appointment to be inserted
      * @throws SQLException if an SQL error occurs
      */
-    private void insertAppointment(Appointment appointment) throws SQLException {
+    public void insertAppointment(Appointment appointment) throws SQLException {
         String query = "INSERT INTO Appointment (Date, Activated, StartTime, EndTime, Note) VALUES (?, ?, ?, ?, ? );";
         PreparedStatement statement=connection.prepareStatement(query);
 
@@ -227,6 +261,20 @@ public class DBRepository {
                     Time.valueOf(appointment.getBooking().getEndTime()),
                     appointment.getBooking().getRoom());
         }
+    }
+
+    /**
+     * Inserts a single group into the database
+     * @param group the group to be inserted
+     * @throws SQLException if an SQL error occurs
+     */
+    public void insertGroup(Group group) throws SQLException {
+        String query = "INSERT INTO Groups (GroupNumber) VALUES (?);";
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        statement.setInt(1,group.getGroupNumber());
+
+        statement.execute();
     }
 
     /**

@@ -24,21 +24,49 @@ public class Group {
     /**
      * Gets all groups
      * @return a list of all groups
-     * @throws Exception if an exception is thrown while getting the groups
+     * @throws RepositoryConnectionException if the connection to the repository fails
+     * @throws SQLException if an SQL error occurs
      */
-    public static List<Group> all() throws Exception {
-        DBRepository repository;
-        List<Group> groups;
-        try {
-            repository = DBRepository.getInstance();
+    public static List<Group> all() throws RepositoryConnectionException, SQLException {
+        return DBRepository.getInstance().getGroups();
+    }
 
-            groups = repository.getGroups();
-        } catch (Exception e){
-            e.printStackTrace();
-            throw new Exception("Exception while getting groups from database");
+    public static void generate(int count) throws RepositoryConnectionException, SQLException {
+        if(count < 1)
+            throw new IllegalArgumentException();
+
+        DBRepository repository = DBRepository.getInstance();
+
+        repository.deleteAllGroups();
+
+        for(int i = 1 ; i <= count ; i++){
+            Group group = new Group(i);
+            repository.insertGroup(group);
         }
+    }
 
-        return groups;
+    public static void delete(Group group) throws RepositoryConnectionException, SQLException {
+        DBRepository.getInstance().deleteGroup(group);
+    }
+
+    /**
+     * Creates a new group with the next available number and stores it in the database
+     * @return the created group
+     * @throws RepositoryConnectionException if the connection to the repository fails
+     * @throws SQLException if an SQL error occurs
+     */
+    public static Group create() throws RepositoryConnectionException, SQLException {
+        Optional<Group> maxGroup = all().stream()
+                .sorted(Comparator.comparing(Group::getGroupNumber).reversed())
+                .findFirst();
+
+        int groupNo = maxGroup.isPresent() ? maxGroup.get().groupNumber + 1 : 1;
+
+        Group group = new Group(groupNo);
+
+        DBRepository.getInstance().insertGroup(group);
+
+        return group;
     }
 
     /**
