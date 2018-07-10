@@ -56,9 +56,7 @@ public class Group {
      * @throws SQLException if an SQL error occurs
      */
     public static Group create() throws RepositoryConnectionException, SQLException {
-        Optional<Group> maxGroup = all().stream()
-                .sorted(Comparator.comparing(Group::getNumber).reversed())
-                .findFirst();
+        Optional<Group> maxGroup = all().stream().max(Comparator.comparing(Group::getNumber));
 
         int groupNo = maxGroup.map(g -> g.number + 1).orElse(1);
 
