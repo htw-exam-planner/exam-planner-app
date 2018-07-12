@@ -130,13 +130,13 @@ public class DBRepository {
                 if(hasReservation){
                     if(hasBooking){
                         state = Appointment.State.BOOKED;
-                        Reservation reservation = new Reservation(group);
-                        appointment = new Appointment(date,timeWindow,note,state,reservation);
+                        Booking booking = new Booking(group,bookingWindow,room);
+                        appointment = new Appointment(date,timeWindow,note,state,booking);
                     }
                     else {
                         state = Appointment.State.RESERVED;
-                        Booking booking = new Booking(group,bookingWindow,room);
-                        appointment = new Appointment(date,timeWindow,note,state,booking);
+                        Reservation reservation = new Reservation(group);
+                        appointment = new Appointment(date,timeWindow,note,state,reservation);
                     }
                 }
                 else{
