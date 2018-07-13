@@ -97,7 +97,10 @@ public class AppointmentEntry extends HBox {
             }
             case FREE: {
                 try {
-                    if (activeGroup.hasReservation() || activeGroup.hasBooking()) {
+                    if (activeGroup.hasReservation()) {
+                        reservationbutton.setVisible(false);
+                        bookbutton.setVisible(true);
+                    } else if (activeGroup.hasBooking()) {
                         reservationbutton.setVisible(false);
                         bookbutton.setVisible(false);
                     } else {
@@ -145,7 +148,8 @@ public class AppointmentEntry extends HBox {
      */
     public void book(ActionEvent event) {
         try {
-            if (appointment.getState() == Appointment.State.FREE || appointment.getState() == Appointment.State.RESERVED) {
+            if (appointment.getState() == Appointment.State.FREE ||
+                    (appointment.getState() == Appointment.State.RESERVED && appointment.getReservation().getGroup().equals(activeGroup))) {
                 appointment.book(activeGroup, LocalTime.of(9, 0));
                 fireEvent(new Event(APPOINTMENT_UPDATED));
             }
