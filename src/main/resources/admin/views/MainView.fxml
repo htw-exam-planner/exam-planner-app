@@ -14,7 +14,7 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#generateAppointmentsAndGroups" text="Termine und Gruppen generieren" />
+              <MenuItem mnemonicParsing="false" onAction="#loadSetup" text="Termine und Gruppen generieren" />
                   <MenuItem mnemonicParsing="false" text="Termine exportieren" />
             </items>
           </Menu>

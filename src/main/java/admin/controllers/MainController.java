@@ -15,13 +15,17 @@ public class MainController {
     @FXML
     MenuBar menuBar;
 
-    public void generateAppointmentsAndGroups(ActionEvent event){
+    /**
+     * Loads the setup view to generate Appointments and views
+     * @param event the event causing the method to be called
+     */
+    public void loadSetup(ActionEvent event){
         try {
             Parent setupViewParent = FXMLLoader.load(getClass().getResource("/admin/views/SetupView.fxml"));
 
             Scene setupScene = new Scene(setupViewParent);
 
-            Stage window = (Stage)menuBar.getScene().getWindow();
+            Stage window = (Stage) menuBar.getScene().getWindow();
 
             window.setScene(setupScene);
             window.show();

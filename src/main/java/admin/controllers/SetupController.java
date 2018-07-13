@@ -25,6 +25,10 @@ public class SetupController {
     @FXML
     TextField groupsField;
 
+    /**
+     * Generates Appointments and Groups as specified in the input fields
+     * @param event the event causing the method to be called
+     */
     public void generate(ActionEvent event){
         try {
             LocalDate startDate = startDatePicker.getValue();

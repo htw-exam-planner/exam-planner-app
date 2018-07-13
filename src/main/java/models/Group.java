@@ -36,8 +36,8 @@ public class Group {
     }
 
     /**
-     * Generates numberOfGroups Groups, numbered 1 to numberOfGroups
-     * @param numberOfGroups the number of groups
+     * Deletes all previous Groups from the database and generates numberOfGroups new ones
+     * @param numberOfGroups the desired number of groups
      * @throws RepositoryConnectionException if the connection to the repository fails
      * @throws SQLException if an SQL error occurs
      * @throws IllegalArgumentException if the number of groups is less than 1
