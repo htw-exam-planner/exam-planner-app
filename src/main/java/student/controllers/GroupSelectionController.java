@@ -16,13 +16,14 @@ import java.io.IOException;
 import java.util.List;
 
 public class GroupSelectionController {
-    @FXML ChoiceBox groupsChoice;
+    @FXML
+    ChoiceBox groupsChoice;
 
     /**
      * Puts the group names into the groupsChoice choice box
      */
     @FXML
-    public void initialize(){
+    public void initialize() {
         List<Group> groups = null;
         try {
             groups = Group.all();
@@ -39,15 +40,17 @@ public class GroupSelectionController {
 
     /**
      * Loads the Students AppoinentmentView when group logs in
+     *
+     * @param event The Event
      */
-    public void loadAppointments(ActionEvent event){
+    public void loadAppointments(ActionEvent event) {
         try {
             StudentAppointmentController controller = new StudentAppointmentController((Group) groupsChoice.getValue());
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/student/views/StudentAppointmentView.fxml"));
             loader.setController(controller);
             Parent appointmentViewParent = loader.load();
             Scene appointmentViewScene = new Scene(appointmentViewParent);
-            Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
             window.setScene(appointmentViewScene);
             window.show();
 

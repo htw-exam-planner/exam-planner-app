@@ -42,6 +42,12 @@ public class AppointmentEntry extends HBox {
     private Appointment appointment;
     private Group activeGroup;
 
+    /**
+     * Creates an AppointmentEntry component
+     *
+     * @param activeGroup The currently selected Group
+     * @param appointment The Appointment to display
+     */
     public AppointmentEntry(Group activeGroup, Appointment appointment) {
         this.activeGroup = activeGroup;
         this.appointment = appointment;
@@ -57,6 +63,9 @@ public class AppointmentEntry extends HBox {
         }
     }
 
+    /**
+     * Displays/Updates the Appointment information in the component
+     */
     public void paint() {
         daylabel.setText(getDateString(appointment.getDate()));
         notelabel.setText(appointment.getNote());
@@ -107,23 +116,52 @@ public class AppointmentEntry extends HBox {
         }
     }
 
-    public void changeReservation(ActionEvent event) throws Exception {
-        if (appointment.getState() == Appointment.State.RESERVED) {
-            appointment.cancelReservation();
-            fireEvent(new Event(APPOINTMENT_UPDATED));
-        } else if (appointment.getState() == Appointment.State.FREE) {
-            appointment.reserve(activeGroup);
-            fireEvent(new Event(APPOINTMENT_UPDATED));
+    /**
+     * Event Handler for changing the reservation state (reserve or cancel)
+     *
+     * @param event The click Event
+     */
+    public void changeReservation(ActionEvent event) {
+        try {
+            if (appointment.getState() == Appointment.State.RESERVED) {
+                appointment.cancelReservation();
+                fireEvent(new Event(APPOINTMENT_UPDATED));
+            } else if (appointment.getState() == Appointment.State.FREE) {
+                appointment.reserve(activeGroup);
+                fireEvent(new Event(APPOINTMENT_UPDATED));
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Termin konnte nicht aktualisiert werden");
+            alert.showAndWait();
+            System.exit(1);
         }
     }
 
-    public void book(ActionEvent event) throws Exception {
-        if (appointment.getState() == Appointment.State.FREE || appointment.getState() == Appointment.State.RESERVED) {
-            appointment.book(activeGroup, LocalTime.of(9, 0));
-            fireEvent(new Event(APPOINTMENT_UPDATED));
+    /**
+     * Event Handler for booking the appointmennt
+     *
+     * @param event The click Event
+     */
+    public void book(ActionEvent event) {
+        try {
+            if (appointment.getState() == Appointment.State.FREE || appointment.getState() == Appointment.State.RESERVED) {
+                appointment.book(activeGroup, LocalTime.of(9, 0));
+                fireEvent(new Event(APPOINTMENT_UPDATED));
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Termin konnte nicht aktualisiert werden");
+            alert.showAndWait();
+            System.exit(1);
         }
     }
 
+    /**
+     * Returns the displayed Appointment
+     *
+     * @return The displayed Appointment
+     */
     public Appointment getAppointment() {
         return appointment;
     }

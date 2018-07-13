@@ -19,6 +19,11 @@ public class StudentAppointmentController {
 
     private Group group;
 
+    /**
+     * Create the controller for the StudentAppointmentView
+     *
+     * @param group The currently active group
+     */
     public StudentAppointmentController(Group group) {
         this.group = group;
     }
