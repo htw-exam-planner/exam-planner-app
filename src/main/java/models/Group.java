@@ -17,6 +17,10 @@ public class Group {
         this.number = number;
     }
 
+    /**
+     * Gets the Group's number
+     * @return the Group's number
+     */
     public int getNumber() {
         return number;
     }
@@ -31,6 +35,12 @@ public class Group {
         return DBRepository.getInstance().getGroups();
     }
 
+    /**
+     * Deletes all previous Groups from the database and generates numberOfGroups new ones
+     * @param numberOfGroups the desired number of groups
+     * @throws RepositoryConnectionException if the connection to the repository fails
+     * @throws SQLException if an SQL error occurs
+     */
     public static void generate(int numberOfGroups) throws RepositoryConnectionException, SQLException {
         if(numberOfGroups < 1)
             throw new IllegalArgumentException();
@@ -45,6 +55,12 @@ public class Group {
         }
     }
 
+    /**
+     * Deletes the Group group from the database
+     * @param group the Group to be deleted
+     * @throws RepositoryConnectionException if the connection to the repository fails
+     * @throws SQLException if an SQL error occurs
+     */
     public static void delete(Group group) throws RepositoryConnectionException, SQLException {
         DBRepository.getInstance().deleteGroup(group);
     }
