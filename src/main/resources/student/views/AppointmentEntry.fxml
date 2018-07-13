@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Font?>
 
 <fx:root alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-         prefHeight="54.0" prefWidth="900.0" spacing="30.0" style="-fx-background-color: #DFDFDF;"
+         prefHeight="54.0" prefWidth="925.0" spacing="30.0" style="-fx-background-color: #DFDFDF;"
          type="javafx.scene.layout.HBox" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <Label fx:id="daylabel" prefHeight="19.0" prefWidth="139.0" text="Day">
@@ -23,7 +23,7 @@
                 <Font size="15.0"/>
             </font>
         </Label>
-        <Label fx:id="statelabel" prefHeight="19.0" prefWidth="150.0" text="Frei">
+        <Label fx:id="statelabel" prefHeight="19.0" prefWidth="175.0" text="Frei">
             <font>
                 <Font size="15.0"/>
             </font>
