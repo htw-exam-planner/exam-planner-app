@@ -259,10 +259,14 @@ public class DBRepository {
         }
 
         if(appointment.getState() == Appointment.State.BOOKED){
+            TimeWindow timeWindow = appointment.getBooking().getTimeWindow();
+            Time startTime = Time.valueOf(timeWindow.getStart());
+            Time endTime = timeWindow.getEnd() == null ? null : Time.valueOf(timeWindow.getEnd());
+
             insertReservation(appointment.getBooking().getGroup(),Date.valueOf(appointment.getDate()));
             insertBooking(appointment.getBooking().getGroup(),
-                    Time.valueOf(appointment.getBooking().getTimeWindow().getStart()),
-                    Time.valueOf(appointment.getBooking().getTimeWindow().getStart()),
+                    startTime,
+                    endTime,
                     appointment.getBooking().getRoom());
         }
     }
