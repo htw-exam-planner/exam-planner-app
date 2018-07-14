@@ -1,31 +1,39 @@
-package student.controllers;
+package shared.controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import models.Appointment;
-import models.Group;
 
+import java.io.IOException;
 import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class StudentAppointmentController {
+public abstract class Appointments extends AnchorPane {
     @FXML
     VBox entries;
 
-    private Group group;
-
     /**
-     * Create the controller for the StudentAppointmentView
+     * Loads the JavaFX view component
      *
-     * @param group The currently active group
+     * This can not be done in the constructor, because initialization logic of extended classes might not be done otherwise
      */
-    public StudentAppointmentController(Group group) {
-        this.group = group;
+    protected void initializeView() {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/shared/views/AppointmentView.fxml"));
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this);
+
+        try {
+            fxmlLoader.load();
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
     }
 
     /**
@@ -36,12 +44,15 @@ public class StudentAppointmentController {
         showAppointments();
     }
 
+    /**
+     * Adds the appointments to the view
+     */
     private void showAppointments() {
         try {
             entries.getChildren().clear();
             Map<Integer, List<AppointmentEntry>> groupedAppointmentEntries = Appointment.all().stream()
                     .map(a -> {
-                        AppointmentEntry entry = new AppointmentEntry(group, a);
+                        AppointmentEntry entry = createAppointmentEntry(a);
                         entry.addEventHandler(AppointmentEntry.APPOINTMENT_UPDATED, event -> showAppointments());
                         entry.paint();
                         return entry;
@@ -60,4 +71,6 @@ public class StudentAppointmentController {
             System.exit(1);
         }
     }
+
+    protected abstract AppointmentEntry createAppointmentEntry(Appointment appointment);
 }
