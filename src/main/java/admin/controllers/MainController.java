@@ -7,6 +7,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.Tab;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -14,6 +16,12 @@ import java.io.IOException;
 public class MainController {
     @FXML
     MenuBar menuBar;
+
+    @FXML
+    Tab groupsTab;
+
+    @FXML
+    AnchorPane groupsPane;
 
     /**
      * Loads the setup view to generate Appointments and views
