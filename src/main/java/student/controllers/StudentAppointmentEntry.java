@@ -1,16 +1,14 @@
 package student.controllers;
 
 import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
 import models.Appointment;
 import models.Group;
+import shared.controller.AppointmentEntry;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -19,9 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-public class AppointmentEntry extends HBox {
-    public static final EventType<Event> APPOINTMENT_UPDATED =
-            new EventType<>("APPOINTMENT_UPDATED");
+public class StudentAppointmentEntry extends AppointmentEntry {
 
     @FXML
     Label daylabel;
@@ -38,21 +34,20 @@ public class AppointmentEntry extends HBox {
     @FXML
     Button bookbutton;
 
-
-    private Appointment appointment;
     private Group activeGroup;
 
     /**
-     * Creates an AppointmentEntry component
+     * Creates an StudentAppointmentEntry component
      *
      * @param activeGroup The currently selected Group
      * @param appointment The Appointment to display
      */
-    public AppointmentEntry(Group activeGroup, Appointment appointment) {
-        this.activeGroup = activeGroup;
-        this.appointment = appointment;
+    public StudentAppointmentEntry(Group activeGroup, Appointment appointment) {
+        super(appointment);
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/student/views/AppointmentEntry.fxml"));
+        this.activeGroup = activeGroup;
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/student/views/StudentAppointmentEntry.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
 
@@ -128,10 +123,10 @@ public class AppointmentEntry extends HBox {
         try {
             if (appointment.getState() == Appointment.State.RESERVED) {
                 appointment.cancelReservation();
-                fireEvent(new Event(APPOINTMENT_UPDATED));
+                emitAppointmentUpdated();
             } else if (appointment.getState() == Appointment.State.FREE) {
                 appointment.reserve(activeGroup);
-                fireEvent(new Event(APPOINTMENT_UPDATED));
+                emitAppointmentUpdated();
             }
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -151,7 +146,7 @@ public class AppointmentEntry extends HBox {
             if (appointment.getState() == Appointment.State.FREE ||
                     (appointment.getState() == Appointment.State.RESERVED && appointment.getReservation().getGroup().equals(activeGroup))) {
                 appointment.book(activeGroup, LocalTime.of(9, 0));
-                fireEvent(new Event(APPOINTMENT_UPDATED));
+                emitAppointmentUpdated();
             }
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -159,15 +154,6 @@ public class AppointmentEntry extends HBox {
             alert.showAndWait();
             System.exit(1);
         }
-    }
-
-    /**
-     * Returns the displayed Appointment
-     *
-     * @return The displayed Appointment
-     */
-    public Appointment getAppointment() {
-        return appointment;
     }
 
     private static String getDateString(LocalDate date) {

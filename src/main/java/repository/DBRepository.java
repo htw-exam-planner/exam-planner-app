@@ -20,7 +20,7 @@ public class DBRepository {
      * @return singleton instance of DBRepository
      * @throws RepositoryConnectionException if the connection to the database fails
      */
-    public static DBRepository getInstance() throws RepositoryConnectionException{
+    public static DBRepository getInstance() throws RepositoryConnectionException {
         try {
             if(instance==null){
                 instance = new DBRepository();

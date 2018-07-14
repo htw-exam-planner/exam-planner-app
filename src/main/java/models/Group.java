@@ -40,8 +40,9 @@ public class Group {
      * @param numberOfGroups the desired number of groups
      * @throws RepositoryConnectionException if the connection to the repository fails
      * @throws SQLException if an SQL error occurs
+     * @throws IllegalArgumentException if the number of groups is less than 1
      */
-    public static void generate(int numberOfGroups) throws RepositoryConnectionException, SQLException {
+    public static void generate(int numberOfGroups) throws RepositoryConnectionException, SQLException, IllegalArgumentException {
         if(numberOfGroups < 1)
             throw new IllegalArgumentException();
 

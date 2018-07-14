@@ -17,7 +17,21 @@ public class RoleSelectionController {
      * @param event
      */
     public void loadAdmin(ActionEvent event){
+        try {
+            Parent adminViewParent = FXMLLoader.load(getClass().getResource("/admin/views/MainView.fxml"));
 
+            Scene adminScene = new Scene(adminViewParent);
+
+            Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
+
+            window.setScene(adminScene);
+            window.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Administratoransicht konnte nicht geladen werden");
+            alert.showAndWait();
+            System.exit(1);
+        }
     }
 
     /**

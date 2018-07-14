@@ -287,7 +287,6 @@ public class Appointment {
      *
      * @param startDate The start date. Must be a Monday
      * @throws InvalidAppointmentStateException if the start date is not a Monday or an Invalid Appointment is constructed
-     * @throws InvalidTimeWindowException       if an appointment in the database has an invalid time window
      * @throws RepositoryConnectionException    if the connection to the repository fails
      * @throws SQLException                     if an SQL error occurs
      */
