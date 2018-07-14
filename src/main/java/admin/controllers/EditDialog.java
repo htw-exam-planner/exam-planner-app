@@ -74,11 +74,11 @@ public class EditDialog extends AnchorPane {
     public void save(ActionEvent event) {
         try {
             final TimeWindow newTimeWindow = new TimeWindow(LocalTime.of(
-                    Integer.parseInt(startHour.getText()),
-                    Integer.parseInt(startMinute.getText())
+                    Integer.parseInt(patchTimeValue(startHour.getText())),
+                    Integer.parseInt(patchTimeValue(startMinute.getText()))
             ), LocalTime.of(
-                    Integer.parseInt(endHour.getText()),
-                    Integer.parseInt(endMinute.getText())
+                    Integer.parseInt(patchTimeValue(endHour.getText())),
+                    Integer.parseInt(patchTimeValue(endMinute.getText()))
             ));
 
             if (!appointment.getTimeWindow().equals(newTimeWindow)) {
@@ -101,5 +101,9 @@ public class EditDialog extends AnchorPane {
             alert.showAndWait();
             System.exit(1);
         }
+    }
+
+    private static String patchTimeValue(String val) {
+        return val.equals("") ? "0" : val;
     }
 }
