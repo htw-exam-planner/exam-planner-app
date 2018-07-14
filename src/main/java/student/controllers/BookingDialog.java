@@ -37,6 +37,11 @@ public class BookingDialog extends AnchorPane {
     @FXML
     TextField minuteField;
 
+    /**
+     * Constructs a new BookingDialog
+     * @param appointment The Appointment to be booked
+     * @param activeGroup The Group wishing to book
+     */
     public BookingDialog(Appointment appointment, Group activeGroup) {
         this.appointment = appointment;
         this.activeGroup = activeGroup;
@@ -54,6 +59,9 @@ public class BookingDialog extends AnchorPane {
         }
     }
 
+    /**
+     * Initializes the labels with the data of the Appointment
+     */
     @FXML
     public void initialize(){
         appointmentLabel.setText("Termin buchen ("+
@@ -64,6 +72,10 @@ public class BookingDialog extends AnchorPane {
         startTimeLabel.setText("Startzeit (" + appointment.getTimeWindow().toString() + ")");
     }
 
+    /**
+     * Books the Appointment
+     * @param event The click event
+     */
     public void book(ActionEvent event){
         try {
             if(hourField.getText().equals("") || minuteField.getText().equals("") ){
@@ -93,6 +105,10 @@ public class BookingDialog extends AnchorPane {
         }
     }
 
+    /**
+     * Closes the dialog without any action
+     * @param event The click event
+     */
     public void cancel(ActionEvent event){
         ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
     }
