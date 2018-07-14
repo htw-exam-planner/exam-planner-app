@@ -41,6 +41,9 @@ public class AdminGroups extends AnchorPane {
         showGroups();
     }
 
+    /**
+     * Puts the Groups into the Group View
+     */
     public void showGroups(){
         try {
             entries.getChildren().clear();
