@@ -155,10 +155,4 @@ public class StudentAppointmentEntry extends AppointmentEntry {
             System.exit(1);
         }
     }
-
-    private static String getDateString(LocalDate date) {
-        String day = date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.GERMAN);
-
-        return day + " " + date.format(DateTimeFormatter.ofPattern("dd.MM.yy", new Locale("de")));
-    }
 }
