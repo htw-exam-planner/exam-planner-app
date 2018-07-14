@@ -59,6 +59,8 @@ public class AdminAppointmentEntry extends AppointmentEntry {
         notelabel.setText(appointment.getNote());
         statelabel.setText(appointment.getState().toString());
 
+        statelabel.setTextFill(getStateColor());
+
         if (appointment.getState() == Appointment.State.BOOKED) {
             statelabel.setText(statelabel.getText() + " (" + appointment.getBooking().getGroup().toString() + ")");
         } else if (appointment.getState() == Appointment.State.RESERVED) {

@@ -61,6 +61,7 @@ public class StudentAppointmentEntry extends AppointmentEntry {
         daylabel.setText(getDateString(appointment.getDate()));
         notelabel.setText(appointment.getNote());
         statelabel.setText(appointment.getState().toString());
+        statelabel.setTextFill(getStateColor());
 
         switch (appointment.getState()) {
             case BOOKED: {
