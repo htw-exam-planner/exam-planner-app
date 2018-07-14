@@ -5,7 +5,6 @@ import javafx.event.Event;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
@@ -16,11 +15,9 @@ import models.InvalidTimeWindowException;
 import models.TimeWindow;
 
 import java.io.IOException;
-import java.net.URL;
 import java.time.LocalTime;
-import java.util.ResourceBundle;
 
-public class EditDialog extends AnchorPane implements Initializable {
+public class EditDialog extends AnchorPane {
     public static final EventType<Event> APPOINTMENT_UPDATED = new EventType<>("admin.controllers.EditDialog:APPOINTMENT_UPDATED");
 
     @FXML
@@ -54,8 +51,12 @@ public class EditDialog extends AnchorPane implements Initializable {
         }
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    /**
+     * Sets up the Edit View by filling the fields with the current values
+     *
+     */
+    @FXML
+    public void initialize() {
         final TimeWindow timeWindow =  appointment.getTimeWindow();
 
         startHour.setText(String.format("%02d", timeWindow.getStart().getHour()));
