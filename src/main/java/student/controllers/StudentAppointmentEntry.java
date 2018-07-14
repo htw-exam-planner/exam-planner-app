@@ -11,11 +11,7 @@ import models.Group;
 import shared.controller.AppointmentEntry;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
-import java.util.Locale;
 
 public class StudentAppointmentEntry extends AppointmentEntry {
 
