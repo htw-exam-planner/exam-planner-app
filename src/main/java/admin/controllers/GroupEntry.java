@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import models.Group;
 
 import java.io.IOException;
@@ -47,9 +48,14 @@ public class GroupEntry extends HBox {
         try {
             groupLabel.setText(group.toString());
 
-            String statusText = group.hasBooking() ? "Gebucht" : group.hasReservation() ? "Reserviert" : "Nicht gebucht";
+            boolean hasReservation = group.hasReservation();
+            boolean hasBooking = group.hasBooking();
+
+            String statusText = hasBooking ? "Gebucht" : hasReservation ? "Reserviert" : "Nicht gebucht";
+            Color color = hasBooking ? Color.MEDIUMSEAGREEN : hasReservation ? Color.DARKGOLDENROD : Color.DARKORANGE;
 
             statusLabel.setText(statusText);
+            statusLabel.setTextFill(color);
         } catch (Exception e){
             e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Anzeigen der Gruppen");

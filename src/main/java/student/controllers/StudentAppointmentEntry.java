@@ -60,13 +60,13 @@ public class StudentAppointmentEntry extends AppointmentEntry {
     public void paint() {
         daylabel.setText(getDateString(appointment.getDate()));
         notelabel.setText(appointment.getNote());
-        statelabel.setText(appointment.getState().toString());
+        statelabel.setText(getStateString());
+        statelabel.setTextFill(getStateColor());
 
         switch (appointment.getState()) {
             case BOOKED: {
                 reservationbutton.setVisible(false);
                 bookbutton.setVisible(false);
-                statelabel.setText(statelabel.getText() + " (" + appointment.getBooking().getGroup().toString() + ")");
             }
             case DEACTIVATED: {
                 reservationbutton.setVisible(false);
@@ -82,8 +82,6 @@ public class StudentAppointmentEntry extends AppointmentEntry {
                     reservationbutton.setVisible(false);
                     bookbutton.setVisible(false);
                 }
-
-                statelabel.setText(statelabel.getText() + " (" + appointment.getReservation().getGroup().toString() + ")");
                 break;
             }
             case FREE: {

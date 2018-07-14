@@ -57,13 +57,9 @@ public class AdminAppointmentEntry extends AppointmentEntry {
     public void paint() {
         daylabel.setText(getDateString(appointment.getDate()));
         notelabel.setText(appointment.getNote());
-        statelabel.setText(appointment.getState().toString());
+        statelabel.setText(getStateString());
 
-        if (appointment.getState() == Appointment.State.BOOKED) {
-            statelabel.setText(statelabel.getText() + " (" + appointment.getBooking().getGroup().toString() + ")");
-        } else if (appointment.getState() == Appointment.State.RESERVED) {
-            statelabel.setText(statelabel.getText() + " (" + appointment.getReservation().getGroup().toString() + ")");
-        }
+        statelabel.setTextFill(getStateColor());
     }
 
     /**
