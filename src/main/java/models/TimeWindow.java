@@ -89,4 +89,15 @@ public class TimeWindow {
         return Objects.equals(start, that.start) &&
                 Objects.equals(end, that.end);
     }
+
+    /**
+     * Makes a string of the time window
+     * @return if the end time is set "start-end", else only start
+     */
+    @Override
+    public String toString(){
+        if(end==null) return start.toString();
+
+        return start.toString() + "-" + end.toString();
+    }
 }

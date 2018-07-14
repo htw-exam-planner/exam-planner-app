@@ -56,4 +56,16 @@ public class Booking {
     public void setRoom(String room) {
         this.room = room;
     }
+
+    /**
+     * Makes a string with the Booking's group, TimeWindow and Room (if applicable)
+     * @return a string with the Booking's group, TimeWindow and Room (if applicable)
+     */
+    @Override
+    public String toString() {
+        if (room==null)
+            return group.toString() + ", " + timeWindow.toString();
+
+        return group.toString() + ", " + timeWindow.toString() + ", " + room;
+    }
 }

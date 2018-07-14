@@ -69,4 +69,25 @@ public abstract class AppointmentEntry extends HBox {
         }
         return Color.BLACK; //Never reached, but else return statement is missing
     }
+
+    /**
+     * Returns the String for the state label
+     *
+     * @return a String representation of the state, with information about reservations or bookings
+     */
+    protected String getStateString(){
+        String stateString = appointment.getState().toString();
+
+        switch (appointment.getState()){
+            case BOOKED:
+                return stateString + " (" + appointment.getBooking().toString() + ")";
+            case RESERVED:
+                return stateString + " (" + appointment.getReservation().getGroup().toString() + ")";
+            case DEACTIVATED:
+                return stateString;
+            case FREE:
+                return stateString + " " + appointment.getTimeWindow().toString();
+        }
+        return stateString; //Never reached, but else return statement is missing
+    }
 }
