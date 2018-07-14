@@ -18,16 +18,10 @@ public class AdminGroups extends AnchorPane {
     @FXML
     VBox entries;
 
-    public AdminGroups(){
-        initializeView();
-    }
-
     /**
-     * Loads the JavaFX view component
-     *
-     * This can not be done in the constructor, because initialization logic of extended classes might not be done otherwise
+     * Loads the corresponding view
      */
-    protected void initializeView() {
+    public AdminGroups(){
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/admin/views/AdminGroups.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
