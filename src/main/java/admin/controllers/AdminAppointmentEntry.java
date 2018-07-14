@@ -3,9 +3,13 @@ package admin.controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import models.Appointment;
 import models.Group;
 import shared.controller.AppointmentEntry;
@@ -68,5 +72,12 @@ public class AdminAppointmentEntry extends AppointmentEntry {
      * @param event The click Event
      */
     public void edit(ActionEvent event) {
+        EditDialog editDialog = new EditDialog(appointment);
+        editDialog.addEventHandler(EditDialog.APPOINTMENT_UPDATED, e -> emitAppointmentUpdated());
+        Stage dialog = new Stage();
+        dialog.setScene(new Scene(editDialog));
+        dialog.initOwner(((Node) event.getSource()).getScene().getWindow());
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.showAndWait();
     }
 }

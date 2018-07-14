@@ -249,7 +249,7 @@ public class DBRepository {
         statement.setDate(1,Date.valueOf(appointment.getDate()));
         statement.setBoolean(2,(appointment.getState() != Appointment.State.DEACTIVATED));
         statement.setTime(3,Time.valueOf(appointment.getTimeWindow().getStart()));
-        statement.setTime(4,Time.valueOf(appointment.getTimeWindow().getStart()));
+        statement.setTime(4,Time.valueOf(appointment.getTimeWindow().getEnd()));
         statement.setString(5,appointment.getNote());
 
         statement.execute();

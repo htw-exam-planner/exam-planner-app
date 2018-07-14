@@ -1,6 +1,7 @@
 package models;
 
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class TimeWindow {
     private LocalTime start;
@@ -78,5 +79,14 @@ public class TimeWindow {
             return time.isAfter(start);
 
         return (time.isAfter(start) && time.isBefore(end));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TimeWindow)) return false;
+        TimeWindow that = (TimeWindow) o;
+        return Objects.equals(start, that.start) &&
+                Objects.equals(end, that.end);
     }
 }

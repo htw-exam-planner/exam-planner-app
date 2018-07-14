@@ -12,7 +12,7 @@ import java.util.Locale;
 
 public abstract class AppointmentEntry extends HBox {
     public static final EventType<Event> APPOINTMENT_UPDATED =
-            new EventType<>("APPOINTMENT_UPDATED");
+            new EventType<>("shared.controller.AppointmentEntry:APPOINTMENT_UPDATED");
 
     protected Appointment appointment;
 
