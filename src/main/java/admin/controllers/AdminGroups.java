@@ -1,6 +1,8 @@
 package admin.controllers;
 
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
@@ -11,6 +13,8 @@ import models.Group;
 import java.io.IOException;
 
 public class AdminGroups extends AnchorPane {
+    public static final EventType<Event> GROUPS_UPDATED =
+            new EventType<>("GROUPS_UPDATED");
     @FXML
     VBox entries;
 
@@ -43,14 +47,17 @@ public class AdminGroups extends AnchorPane {
         showGroups();
     }
 
-    private void showGroups(){
+    public void showGroups(){
         try {
             entries.getChildren().clear();
 
             for (Group g: Group.all()) {
                 GroupEntry entry = new GroupEntry(g);
 
-                entry.addEventHandler(GroupEntry.GROUP_DELETED, event -> showGroups());
+                entry.addEventHandler(GroupEntry.GROUP_DELETED, event -> {
+                    showGroups();
+                    fireEvent(new Event(GROUPS_UPDATED));
+                });
 
                 entry.paint();
 

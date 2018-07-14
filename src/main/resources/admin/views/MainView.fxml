@@ -26,12 +26,12 @@
             <tabs>
                 <Tab text="Termine">
                     <content>
-                        <AdminAppointments minHeight="0.0" minWidth="0.0" />
+                        <AdminAppointments fx:id="appointmentsView" minHeight="0.0" minWidth="0.0" />
                     </content>
                 </Tab>
                 <Tab text="Gruppen">
                     <content>
-                        <AdminGroups minHeight="0.0" minWidth="0.0"  />
+                        <AdminGroups fx:id="groupView" minHeight="0.0" minWidth="0.0"  />
                     </content>
                 </Tab>
             </tabs>

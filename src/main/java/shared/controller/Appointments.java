@@ -1,5 +1,7 @@
 package shared.controller;
 
+import javafx.event.Event;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
@@ -16,6 +18,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class Appointments extends AnchorPane {
+    public static final EventType<Event> APPOINTMENTS_UPDATED =
+            new EventType<>("APPOINTMENTS_UPDATED");
+
     @FXML
     VBox entries;
 
@@ -47,13 +52,16 @@ public abstract class Appointments extends AnchorPane {
     /**
      * Adds the appointments to the view
      */
-    private void showAppointments() {
+    public void showAppointments() {
         try {
             entries.getChildren().clear();
             Map<Integer, List<AppointmentEntry>> groupedAppointmentEntries = Appointment.all().stream()
                     .map(a -> {
                         AppointmentEntry entry = createAppointmentEntry(a);
-                        entry.addEventHandler(AppointmentEntry.APPOINTMENT_UPDATED, event -> showAppointments());
+                        entry.addEventHandler(AppointmentEntry.APPOINTMENT_UPDATED, event -> {
+                            showAppointments();
+                            fireEvent(new Event(APPOINTMENTS_UPDATED));
+                        });
                         entry.paint();
                         return entry;
                     })

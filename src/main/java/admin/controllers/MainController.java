@@ -10,6 +10,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import shared.controller.Appointments;
 
 import java.io.IOException;
 
@@ -18,10 +19,19 @@ public class MainController {
     MenuBar menuBar;
 
     @FXML
-    Tab groupsTab;
+    AdminAppointments appointmentsView;
 
     @FXML
-    AnchorPane groupsPane;
+    AdminGroups groupView;
+
+    /**
+     * Adds event handlers to updates of the Groups and Appointments updating the other view
+     */
+    @FXML
+    public void initialize(){
+        appointmentsView.addEventHandler(Appointments.APPOINTMENTS_UPDATED, event -> groupView.showGroups());
+        groupView.addEventHandler(AdminGroups.GROUPS_UPDATED, event -> appointmentsView.showAppointments());
+    }
 
     /**
      * Loads the setup view to generate Appointments and views
