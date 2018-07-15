@@ -7,10 +7,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import models.Appointment;
+import models.Booking;
 import models.InvalidTimeWindowException;
 import models.TimeWindow;
 
@@ -35,6 +37,30 @@ public class EditDialog extends AnchorPane {
     @FXML
     public TextField note;
 
+    @FXML
+    public AnchorPane editBookingContainer;
+
+    @FXML
+    public TextField bookingStartHour;
+
+    @FXML
+    public TextField bookingStartMinute;
+
+    @FXML
+    public TextField bookingEndHour;
+
+    @FXML
+    public TextField bookingEndMinute;
+
+    @FXML
+    public TextField bookingRoom;
+
+    @FXML
+    public Button changeActivationButton;
+
+    @FXML
+    public Button setFreeButton;
+
     private Appointment appointment;
 
     public EditDialog(Appointment appointment) {
@@ -53,17 +79,60 @@ public class EditDialog extends AnchorPane {
 
     /**
      * Sets up the Edit View by filling the fields with the current values
-     *
      */
     @FXML
     public void initialize() {
-        final TimeWindow timeWindow =  appointment.getTimeWindow();
+        final TimeWindow timeWindow = appointment.getTimeWindow();
 
-        startHour.setText(String.format("%02d", timeWindow.getStart().getHour()));
-        startMinute.setText(String.format("%02d", timeWindow.getStart().getMinute()));
-        endHour.setText(String.format("%02d", timeWindow.getEnd().getHour()));
-        endMinute.setText(String.format("%02d", timeWindow.getEnd().getMinute()));
+        startHour.setText(formatTimeValue(timeWindow.getStart().getHour()));
+        startMinute.setText(formatTimeValue(timeWindow.getStart().getMinute()));
+        endHour.setText(formatTimeValue(timeWindow.getEnd().getHour()));
+        endMinute.setText(formatTimeValue(timeWindow.getEnd().getMinute()));
         note.setText(appointment.getNote() == null ? "" : appointment.getNote());
+
+        switch (appointment.getState()) {
+            case BOOKED: {
+                final Booking booking = appointment.getBooking();
+                editBookingContainer.setVisible(true);
+                bookingStartHour.setText(formatTimeValue(booking.getTimeWindow().getStart().getHour()));
+                bookingStartMinute.setText(formatTimeValue(booking.getTimeWindow().getStart().getMinute()));
+                bookingRoom.setText(booking.getRoom() == null ? "" : booking.getRoom());
+
+                if (booking.getTimeWindow().getEnd() != null) {
+                    bookingEndHour.setText(formatTimeValue(booking.getTimeWindow().getEnd().getHour()));
+                    bookingEndMinute.setText(formatTimeValue(booking.getTimeWindow().getEnd().getMinute()));
+                } else {
+                    bookingEndHour.setText("");
+                    bookingEndMinute.setText("");
+                }
+
+                setFreeButton.setVisible(true);
+
+                changeActivationButton.setText("Deaktivieren");
+                break;
+            }
+            case RESERVED: {
+                editBookingContainer.setVisible(false);
+                setFreeButton.setVisible(true);
+
+                changeActivationButton.setText("Deaktivieren");
+                break;
+            }
+            case DEACTIVATED: {
+                editBookingContainer.setVisible(false);
+                setFreeButton.setVisible(false);
+
+                changeActivationButton.setText("Aktivieren");
+                break;
+            }
+            case FREE: {
+                editBookingContainer.setVisible(false);
+                setFreeButton.setVisible(false);
+
+                changeActivationButton.setText("Deaktivieren");
+                break;
+            }
+        }
     }
 
     /**
@@ -89,6 +158,36 @@ public class EditDialog extends AnchorPane {
                 appointment.setNote(note.getText());
             }
 
+
+            if (appointment.getState() == Appointment.State.BOOKED) {
+                final Booking booking = appointment.getBooking();
+                TimeWindow newBookingTimeWindow;
+
+                if (bookingEndHour.getText().equals("") && bookingEndMinute.getText().equals("")) {
+                    newBookingTimeWindow = new TimeWindow(LocalTime.of(
+                            Integer.parseInt(patchTimeValue(bookingStartHour.getText())),
+                            Integer.parseInt(patchTimeValue(bookingStartMinute.getText()))
+                    ));
+                } else {
+                    newBookingTimeWindow = new TimeWindow(LocalTime.of(
+                            Integer.parseInt(patchTimeValue(bookingStartHour.getText())),
+                            Integer.parseInt(patchTimeValue(bookingStartMinute.getText()))
+                    ), LocalTime.of(
+                            Integer.parseInt(patchTimeValue(bookingEndHour.getText())),
+                            Integer.parseInt(patchTimeValue(bookingEndMinute.getText()))
+                    ));
+                }
+
+
+                if (!booking.getTimeWindow().equals(newBookingTimeWindow)) {
+                    booking.updateTimeWindow(newBookingTimeWindow);
+                }
+
+                if (!(booking.getRoom() == null ? "" : booking.getRoom()).equals(bookingRoom.getText())) {
+                    booking.updateRoom(bookingRoom.getText());
+                }
+            }
+
             fireEvent(new Event(APPOINTMENT_UPDATED));
 
             ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
@@ -101,6 +200,64 @@ public class EditDialog extends AnchorPane {
             alert.showAndWait();
             System.exit(1);
         }
+    }
+
+    /**
+     * Closes the editor without saving
+     *
+     * @param event the event causing the method to be called
+     */
+    public void close(ActionEvent event) {
+        ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
+    }
+
+    /**
+     * Toggle the activation state of the appointment
+     *
+     * @param event the event causing the method to be called
+     */
+    public void toggleActivation(ActionEvent event) {
+        try {
+            if (appointment.getState() == Appointment.State.DEACTIVATED) {
+                appointment.setFree();
+            } else {
+                appointment.deactivate();
+            }
+
+            fireEvent(new Event(APPOINTMENT_UPDATED));
+
+            ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Termin konnte nicht aktualisiert werden");
+            alert.showAndWait();
+            System.exit(1);
+        }
+    }
+
+    /**
+     * Cancels an existing Booking or Reservation
+     *
+     * @param event the event causing the method to be called
+     */
+    public void setFree(ActionEvent event) {
+        try {
+            if (appointment.getState() == Appointment.State.BOOKED || appointment.getState() == Appointment.State.RESERVED) {
+                appointment.setFree();
+            }
+            fireEvent(new Event(APPOINTMENT_UPDATED));
+
+            initialize();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Termin konnte nicht aktualisiert werden");
+            alert.showAndWait();
+            System.exit(1);
+        }
+    }
+
+    private static String formatTimeValue(int timeValue) {
+        return String.format("%02d", timeValue);
     }
 
     private static String patchTimeValue(String val) {

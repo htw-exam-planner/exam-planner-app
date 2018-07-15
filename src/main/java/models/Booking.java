@@ -1,5 +1,10 @@
 package models;
 
+import repository.DBRepository;
+import repository.RepositoryConnectionException;
+
+import java.sql.SQLException;
+
 public class Booking {
     private Group group;
     private TimeWindow timeWindow;
@@ -7,9 +12,10 @@ public class Booking {
 
     /**
      * Constructs a new Booking
-     * @param group the Booking's group
+     *
+     * @param group      the Booking's group
      * @param timeWindow the Booking's time window
-     * @param room the Booking's room
+     * @param room       the Booking's room
      */
     public Booking(Group group, TimeWindow timeWindow, String room) {
         this.group = group;
@@ -19,6 +25,7 @@ public class Booking {
 
     /**
      * Gets the Booking's group
+     *
      * @return the group that booked the appointment
      */
     public Group getGroup() {
@@ -27,6 +34,7 @@ public class Booking {
 
     /**
      * Gets the booking's time window
+     *
      * @return the time window
      */
     public TimeWindow getTimeWindow() {
@@ -35,6 +43,7 @@ public class Booking {
 
     /**
      * Gets the Booking's room
+     *
      * @return the room
      */
     public String getRoom() {
@@ -43,27 +52,36 @@ public class Booking {
 
     /**
      * Sets the booking's time window
+     *
      * @param timeWindow the time window
+     * @throws RepositoryConnectionException if the connection to the database fails
+     * @throws SQLException                  if an SQL error occurs
      */
-    public void setTimeWindow(TimeWindow timeWindow) {
+    public void updateTimeWindow(TimeWindow timeWindow) throws RepositoryConnectionException, SQLException {
         this.timeWindow = timeWindow;
+        DBRepository.getInstance().updateBooking(this);
     }
 
     /**
      * sets the booking's room
+     *
      * @param room the room
+     * @throws RepositoryConnectionException if the connection to the database fails
+     * @throws SQLException                  if an SQL error occurs
      */
-    public void setRoom(String room) {
+    public void updateRoom(String room) throws RepositoryConnectionException, SQLException {
         this.room = room;
+        DBRepository.getInstance().updateBooking(this);
     }
 
     /**
      * Makes a string with the Booking's group, TimeWindow and Room (if applicable)
+     *
      * @return a string with the Booking's group, TimeWindow and Room (if applicable)
      */
     @Override
     public String toString() {
-        if (room==null)
+        if (room == null)
             return group.toString() + ", " + timeWindow.toString();
 
         return group.toString() + ", " + timeWindow.toString() + ", " + room;
