@@ -1,4 +1,4 @@
-package student.controllers;
+package student.presenters;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -12,7 +12,7 @@ import models.Group;
 
 import java.util.List;
 
-public class GroupSelectionController {
+public class GroupSelection {
     @FXML
     ChoiceBox groupsChoice;
 

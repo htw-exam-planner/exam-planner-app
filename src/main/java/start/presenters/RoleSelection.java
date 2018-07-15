@@ -1,4 +1,4 @@
-package start.controllers;
+package start.presenters;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class RoleSelectionController {
+public class RoleSelection {
 
     /**
      * Loads the Admin View
@@ -18,7 +18,7 @@ public class RoleSelectionController {
      */
     public void loadAdmin(ActionEvent event){
         try {
-            Parent adminViewParent = FXMLLoader.load(getClass().getResource("/admin/views/MainView.fxml"));
+            Parent adminViewParent = FXMLLoader.load(getClass().getResource("/admin/views/Main.fxml"));
 
             Scene adminScene = new Scene(adminViewParent);
 
@@ -40,7 +40,7 @@ public class RoleSelectionController {
      */
     public void loadStudent(ActionEvent event){
         try {
-            Parent groupSelectionParent = FXMLLoader.load(getClass().getResource("/student/views/GroupSelectionView.fxml"));
+            Parent groupSelectionParent = FXMLLoader.load(getClass().getResource("/student/views/GroupSelection.fxml"));
 
             Scene groupSelectionScene = new Scene(groupSelectionParent);
 

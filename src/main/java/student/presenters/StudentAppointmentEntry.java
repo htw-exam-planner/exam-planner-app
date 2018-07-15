@@ -1,4 +1,4 @@
-package student.controllers;
+package student.presenters;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,12 +11,10 @@ import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.Appointment;
-import models.Booking;
 import models.Group;
-import shared.controller.AppointmentEntry;
+import shared.presenters.AppointmentEntry;
 
 import java.io.IOException;
-import java.time.LocalTime;
 
 public class StudentAppointmentEntry extends AppointmentEntry {
 

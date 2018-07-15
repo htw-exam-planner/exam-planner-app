@@ -1,4 +1,4 @@
-package admin.controllers;
+package admin.presenters;
 
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.time.LocalTime;
 
 public class EditDialog extends AnchorPane {
-    public static final EventType<Event> APPOINTMENT_UPDATED = new EventType<>("admin.controllers.EditDialog:APPOINTMENT_UPDATED");
+    public static final EventType<Event> APPOINTMENT_UPDATED = new EventType<>("admin.presenters.EditDialog:APPOINTMENT_UPDATED");
 
     @FXML
     public TextField startHour;

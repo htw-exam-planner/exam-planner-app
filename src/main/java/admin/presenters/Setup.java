@@ -1,4 +1,4 @@
-package admin.controllers;
+package admin.presenters;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,10 +15,9 @@ import models.Group;
 import models.InvalidAppointmentStateException;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDate;
 
-public class SetupController {
+public class Setup {
     @FXML
     DatePicker startDatePicker;
 
@@ -37,7 +36,7 @@ public class SetupController {
             Appointment.generate(startDate);
             Group.generate(groupCount);
 
-            Parent adminViewParent = FXMLLoader.load(getClass().getResource("/admin/views/MainView.fxml"));
+            Parent adminViewParent = FXMLLoader.load(getClass().getResource("/admin/views/Main.fxml"));
 
             Scene adminScene = new Scene(adminViewParent);
 

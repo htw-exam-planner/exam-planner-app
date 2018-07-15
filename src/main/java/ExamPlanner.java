@@ -16,7 +16,7 @@ public class ExamPlanner extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("start/views/RoleSelectionView.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("start/views/RoleSelection.fxml"));
 
             Scene scene = new Scene(root, 600, 400);
 

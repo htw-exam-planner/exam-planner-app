@@ -1,8 +1,8 @@
-package admin.controllers;
+package admin.presenters;
 
 import models.Appointment;
-import shared.controller.Appointments;
-import shared.controller.AppointmentEntry;
+import shared.presenters.Appointments;
+import shared.presenters.AppointmentEntry;
 
 public class AdminAppointments extends Appointments {
     public AdminAppointments() {

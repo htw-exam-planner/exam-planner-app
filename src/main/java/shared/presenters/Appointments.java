@@ -1,4 +1,4 @@
-package shared.controller;
+package shared.presenters;
 
 import javafx.event.Event;
 import javafx.event.EventType;
@@ -30,7 +30,7 @@ public abstract class Appointments extends AnchorPane {
      * This can not be done in the constructor, because initialization logic of extended classes might not be done otherwise
      */
     protected void initializeView() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/shared/views/AppointmentView.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/shared/views/Appointment.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
 
