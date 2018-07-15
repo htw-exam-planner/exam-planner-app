@@ -3,10 +3,15 @@ package student.controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import models.Appointment;
+import models.Booking;
 import models.Group;
 import shared.controller.AppointmentEntry;
 
@@ -137,11 +142,16 @@ public class StudentAppointmentEntry extends AppointmentEntry {
      */
     public void book(ActionEvent event) {
         try {
-            if (appointment.getState() == Appointment.State.FREE ||
-                    (appointment.getState() == Appointment.State.RESERVED && appointment.getReservation().getGroup().equals(activeGroup))) {
-                appointment.book(activeGroup, LocalTime.of(9, 0));
-                emitAppointmentUpdated();
-            }
+            BookingDialog bookingDialog = new BookingDialog(appointment,activeGroup);
+            bookingDialog.addEventHandler(BookingDialog.APPOINTMENT_UPDATED, e -> emitAppointmentUpdated());
+
+            Stage dialog = new Stage();
+
+            dialog.setScene(new Scene(bookingDialog));
+            dialog.initOwner(((Node) event.getSource()).getScene().getWindow());
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.showAndWait();
+
         } catch (Exception e) {
             System.err.println(e.getMessage());
             Alert alert = new Alert(Alert.AlertType.ERROR, "Termin konnte nicht aktualisiert werden");
