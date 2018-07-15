@@ -31,23 +31,65 @@
          </font>
       </TextField>
       <Label layoutX="127.0" layoutY="102.0" text=":" />
-      <TextField fx:id="endHour" layoutX="230.0" layoutY="101.0" prefHeight="19.0" prefWidth="31.0" text="11">
+      <TextField fx:id="endHour" layoutX="230.0" layoutY="101.0" prefHeight="19.0" prefWidth="31.0">
          <font>
             <Font size="11.0" />
          </font>
       </TextField>
-      <TextField fx:id="endMinute" layoutX="269.0" layoutY="101.0" prefHeight="19.0" prefWidth="31.0" text="40">
+      <TextField fx:id="endMinute" layoutX="269.0" layoutY="101.0" prefHeight="19.0" prefWidth="31.0">
          <font>
             <Font size="11.0" />
          </font>
       </TextField>
       <Label layoutX="263.0" layoutY="102.0" text=":" />
-      <Button layoutX="54.0" layoutY="332.0" mnemonicParsing="false" onAction="#save" text="Speichern" />
       <Label layoutX="70.0" layoutY="136.0" text="Notiz bearbeiten">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
       <TextField fx:id="note" layoutX="94.0" layoutY="157.0" prefHeight="27.0" prefWidth="422.0" />
+      <AnchorPane fx:id="editBookingContainer" layoutX="70.0" layoutY="191.0">
+         <children>
+            <Label text="Buchung bearbeiten">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label layoutX="20.0" layoutY="19.0" text="Beginn" />
+            <Label layoutX="157.0" layoutY="19.0" text="Ende" />
+            <TextField fx:id="bookingStartHour" layoutX="24.0" layoutY="36.0" prefHeight="19.0" prefWidth="31.0">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="bookingStartMinute" layoutX="63.0" layoutY="36.0" prefHeight="19.0" prefWidth="31.0">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </TextField>
+            <Label layoutX="57.0" layoutY="37.0" text=":" />
+            <TextField fx:id="bookingEndHour" layoutX="160.0" layoutY="36.0" prefHeight="19.0" prefWidth="31.0">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="bookingEndMinute" layoutX="199.0" layoutY="36.0" prefHeight="19.0" prefWidth="31.0">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </TextField>
+            <Label layoutX="193.0" layoutY="37.0" text=":" />
+            <Label layoutX="250.0" layoutY="19.0" text="Raum" />
+            <TextField fx:id="bookingRoom" layoutX="254.0" layoutY="36.0" prefHeight="22.0" prefWidth="43.0">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </TextField>
+         </children>
+      </AnchorPane>
+      <Button layoutX="54.0" layoutY="332.0" mnemonicParsing="false" onAction="#save" text="Speichern" />
+      <Button fx:id="changeActivationButton" layoutX="148.0" layoutY="332.0" mnemonicParsing="false" onAction="#toggleActivation" text="Deaktivieren" />
+      <Button layoutX="258.0" layoutY="332.0" mnemonicParsing="false" onAction="#close" text="Schließen" />
+      <Button fx:id="setFreeButton" layoutX="358.0" layoutY="332.0" mnemonicParsing="false" onAction="#setFree" text="Frei setzen" />
    </children>
 </fx:root>

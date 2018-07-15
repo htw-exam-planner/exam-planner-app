@@ -1,5 +1,10 @@
 package models;
 
+import repository.DBRepository;
+import repository.RepositoryConnectionException;
+
+import java.sql.SQLException;
+
 public class Booking {
     private Group group;
     private TimeWindow timeWindow;
@@ -45,16 +50,18 @@ public class Booking {
      * Sets the booking's time window
      * @param timeWindow the time window
      */
-    public void setTimeWindow(TimeWindow timeWindow) {
+    public void updateTimeWindow(TimeWindow timeWindow) throws RepositoryConnectionException, SQLException {
         this.timeWindow = timeWindow;
+        DBRepository.getInstance().updateBooking(this);
     }
 
     /**
      * sets the booking's room
      * @param room the room
      */
-    public void setRoom(String room) {
+    public void updateRoom(String room) throws RepositoryConnectionException, SQLException {
         this.room = room;
+        DBRepository.getInstance().updateBooking(this);
     }
 
     /**
