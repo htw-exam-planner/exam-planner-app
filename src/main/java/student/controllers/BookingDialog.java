@@ -78,14 +78,12 @@ public class BookingDialog extends AnchorPane {
      */
     public void book(ActionEvent event){
         try {
-            if(hourField.getText().equals("") || minuteField.getText().equals("") ){
-                throw new IllegalArgumentException();
-            }
+            int hour = hourField.getText().equals("") ? 0 : Integer.parseInt(hourField.getText());
+            int minute = minuteField.getText().equals("") ? 0 : Integer.parseInt(minuteField.getText());
 
-            LocalTime starTime = LocalTime.of(Integer.parseInt(hourField.getText()),
-                    Integer.parseInt(minuteField.getText()));
+            LocalTime startTime = LocalTime.of(hour, minute);
 
-            appointment.book(activeGroup,starTime);
+            appointment.book(activeGroup,startTime);
 
             fireEvent(new Event(APPOINTMENT_UPDATED));
 
