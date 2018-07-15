@@ -1,4 +1,4 @@
-package admin.controllers;
+package admin.presenters;
 
 import javafx.event.Event;
 import javafx.event.EventType;

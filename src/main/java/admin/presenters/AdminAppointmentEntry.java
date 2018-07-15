@@ -1,25 +1,17 @@
-package admin.controllers;
+package admin.presenters;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.Appointment;
-import models.Group;
-import shared.controller.AppointmentEntry;
+import shared.presenters.AppointmentEntry;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
-import java.util.Locale;
 
 public class AdminAppointmentEntry extends AppointmentEntry {
 

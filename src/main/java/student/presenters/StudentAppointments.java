@@ -1,15 +1,15 @@
-package student.controllers;
+package student.presenters;
 
 import models.Appointment;
 import models.Group;
-import shared.controller.Appointments;
-import shared.controller.AppointmentEntry;
+import shared.presenters.Appointments;
+import shared.presenters.AppointmentEntry;
 
 public class StudentAppointments extends Appointments {
     private Group group;
 
     /**
-     * Create the controller for the StudentAppointmentView
+     * Create the presenters for the StudentAppointmentView
      *
      * @param group The currently active group
      */

@@ -1,4 +1,4 @@
-package admin.controllers;
+package admin.presenters;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -7,14 +7,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.Tab;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import shared.controller.Appointments;
+import shared.presenters.Appointments;
 
 import java.io.IOException;
 
-public class MainController {
+public class Main {
     @FXML
     MenuBar menuBar;
 
@@ -39,7 +37,7 @@ public class MainController {
      */
     public void loadSetup(ActionEvent event){
         try {
-            Parent setupViewParent = FXMLLoader.load(getClass().getResource("/admin/views/SetupView.fxml"));
+            Parent setupViewParent = FXMLLoader.load(getClass().getResource("/admin/views/Setup.fxml"));
 
             Scene setupScene = new Scene(setupViewParent);
 

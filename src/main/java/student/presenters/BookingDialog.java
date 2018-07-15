@@ -1,4 +1,4 @@
-package student.controllers;
+package student.presenters;
 
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -20,7 +20,7 @@ import java.util.Locale;
 
 public class BookingDialog extends AnchorPane {
     public static final EventType<Event> APPOINTMENT_UPDATED =
-            new EventType<>("student.controllers.BookingDialog:APPOINTMENT_UPDATED");
+            new EventType<>("student.presenters.BookingDialog:APPOINTMENT_UPDATED");
 
     private Appointment appointment;
     private Group activeGroup;

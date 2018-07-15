@@ -1,8 +1,7 @@
-package shared.controller;
+package shared.presenters;
 
 import javafx.event.Event;
 import javafx.event.EventType;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import models.Appointment;
@@ -14,7 +13,7 @@ import java.util.Locale;
 
 public abstract class AppointmentEntry extends HBox {
     public static final EventType<Event> APPOINTMENT_UPDATED =
-            new EventType<>("shared.controller.AppointmentEntry:APPOINTMENT_UPDATED");
+            new EventType<>("shared.presenters.AppointmentEntry:APPOINTMENT_UPDATED");
 
     protected Appointment appointment;
 
