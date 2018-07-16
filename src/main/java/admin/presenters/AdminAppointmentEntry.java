@@ -57,7 +57,7 @@ public class AdminAppointmentEntry extends AppointmentEntry {
     /**
      * Event Handler for editing the appointmennt
      *
-     * @param event The click Event
+     * @param event The event that caused the method to be called
      */
     public void edit(ActionEvent event) {
         EditDialog editDialog = new EditDialog(appointment);

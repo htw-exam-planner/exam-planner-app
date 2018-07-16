@@ -109,7 +109,7 @@ public class Appointment {
     /**
      * Gets the appointment's time window
      *
-     * @return
+     * @return The Appointment's time window
      */
     public TimeWindow getTimeWindow() {
         return timeWindow;
@@ -160,6 +160,7 @@ public class Appointment {
      * @throws RepositoryConnectionException    if the connection to the repository failed
      * @throws InvalidAppointmentStateException if the data from the database is invalid
      * @throws SQLException                     if an SQL error occurs
+     * @throws InvalidTimeWindowException       if an Appointment has an invalid time window
      */
     public void reserve(Group reservingGroup) throws OperationNotAllowedException, SQLException,
             RepositoryConnectionException, InvalidAppointmentStateException, InvalidTimeWindowException {

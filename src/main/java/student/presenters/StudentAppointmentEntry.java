@@ -114,7 +114,7 @@ public class StudentAppointmentEntry extends AppointmentEntry {
     /**
      * Event Handler for changing the reservation state (reserve or cancel)
      *
-     * @param event The click Event
+     * @param event The event that caused the method to be called
      */
     public void changeReservation(ActionEvent event) {
         try {
@@ -136,7 +136,7 @@ public class StudentAppointmentEntry extends AppointmentEntry {
     /**
      * Event Handler for booking the appointmennt
      *
-     * @param event The click Event
+     * @param event The event that caused the method to be called
      */
     public void book(ActionEvent event) {
         try {
