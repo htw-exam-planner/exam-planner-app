@@ -14,6 +14,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -45,6 +46,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.9</version>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
@@ -62,7 +64,7 @@
                         <additionalOption>-include</additionalOption>
                         <additionalOption>-tree</additionalOption>
                         <additionalOption>-hyperref</additionalOption>
-                        <additionalOption>-sectionlevel section</additionalOption>
+                        <additionalOption>-sectionlevel subsection</additionalOption>
                         <additionalOption>-output JavaDoc.tex</additionalOption>
                         <additionalOption>-shortinherited</additionalOption>
                     </additionalOptions>
