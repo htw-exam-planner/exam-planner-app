@@ -42,6 +42,32 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <docletPath>${project.baseUri}/doclets/TeXDoclet.jar</docletPath>
+                    <doclet>org.stfm.texdoclet.TeXDoclet</doclet>
+                    <sourcepath>src/main/java</sourcepath>
+                    <useStandardDocletOptions>false</useStandardDocletOptions><!-- important ! -->
+                    <additionalOptions>
+                        <additionalOption>-include</additionalOption>
+                        <additionalOption>-tree</additionalOption>
+                        <additionalOption>-hyperref</additionalOption>
+                        <additionalOption>-sectionlevel section</additionalOption>
+                        <additionalOption>-output JavaDoc.tex</additionalOption>
+                        <additionalOption>-shortinherited</additionalOption>
+                    </additionalOptions>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -68,6 +94,13 @@
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
             <version>6.4.0.jre8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>
+                3.0.0
+            </version>
         </dependency>
     </dependencies>
 </project>
