@@ -14,7 +14,7 @@ public class RoleSelection {
 
     /**
      * Loads the Admin View
-     * @param event The click event
+     * @param event The event that caused the method to be called
      */
     public void loadAdmin(ActionEvent event){
         try {
@@ -36,7 +36,7 @@ public class RoleSelection {
 
     /**
      * Loads the GroupSelectionView for logging in as a group
-     * @param event The click event
+     * @param event The event that caused the method to be called
      */
     public void loadStudent(ActionEvent event){
         try {

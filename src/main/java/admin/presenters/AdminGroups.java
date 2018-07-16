@@ -71,7 +71,7 @@ public class AdminGroups extends AnchorPane {
 
     /**
      * Adds a new Group and reloads the view
-     * @param event The click event
+     * @param event The event that caused the method to be called
      */
     public void add(ActionEvent event){
         try {

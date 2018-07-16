@@ -74,7 +74,7 @@ public class BookingDialog extends AnchorPane {
 
     /**
      * Books the Appointment
-     * @param event The click event
+     * @param event The event that caused the method to be called
      */
     public void book(ActionEvent event){
         try {
@@ -105,7 +105,7 @@ public class BookingDialog extends AnchorPane {
 
     /**
      * Closes the dialog without any action
-     * @param event The click event
+     * @param event The event that caused the method to be called
      */
     public void cancel(ActionEvent event){
         ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
