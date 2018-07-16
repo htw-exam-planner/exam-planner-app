@@ -299,7 +299,7 @@ public class Appointment {
 
             repository.deleteAllAppointments();
 
-            final LocalTime start = LocalTime.of(8, 30);
+            final LocalTime start = LocalTime.of(7, 30);
             final LocalTime end = LocalTime.of(16, 40);
             final TimeWindow timeWindow = new TimeWindow(start, end);
 
