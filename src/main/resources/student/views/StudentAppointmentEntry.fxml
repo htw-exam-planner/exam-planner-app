@@ -10,20 +10,20 @@
          prefHeight="54.0" prefWidth="1000.0" spacing="30.0" style="-fx-background-color: #DFDFDF;"
          type="javafx.scene.layout.HBox" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Label fx:id="daylabel" prefHeight="19.0" prefWidth="139.0" text="Day">
+        <Label fx:id="daylabel" prefHeight="19.0" prefWidth="120.0" text="Day">
             <font>
                 <Font size="15.0"/>
             </font>
         </Label>
-        <Button fx:id="reservationbutton" mnemonicParsing="false" prefHeight="27.0" prefWidth="106.0"
+        <Button fx:id="reservationbutton" mnemonicParsing="false" prefHeight="27.0" prefWidth="140.0"
                 text="Reservieren" onAction="#changeReservation"/>
-        <Button fx:id="bookbutton" mnemonicParsing="false" prefHeight="27.0" prefWidth="84.0" text="Buchen" onAction="#book"/>
+        <Button fx:id="bookbutton" mnemonicParsing="false" prefHeight="27.0" prefWidth="130.0" text="Buchen" onAction="#book"/>
         <Label fx:id="notelabel" prefHeight="19.0" prefWidth="289.0" text="Comment">
             <font>
                 <Font size="15.0"/>
             </font>
         </Label>
-        <Label fx:id="statelabel" prefHeight="19.0" prefWidth="325.0" text="Frei">
+        <Label fx:id="statelabel" prefHeight="19.0" prefWidth="350.0" text="Frei">
             <font>
                 <Font size="15.0"/>
             </font>
